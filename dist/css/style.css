@@ -1605,7 +1605,7 @@ footer p {
 #player-nav {
   position: fixed;
   right: 20px;
-  bottom: 20px;
+  bottom: 90px;
   text-align: center;
 }
 #player-nav li {
