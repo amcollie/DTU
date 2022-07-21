@@ -1,5 +1,7 @@
 CREATE DEFINER=`h5g8w9v3_DEVADM`@`%` PROCEDURE `INSERT_PROFILE_ONE_PASSENGER`(
 
+IN input_passenger_record_id VARCHAR(15),
+
 IN input_country VARCHAR(100),
 IN input_address VARCHAR(75),
 IN input_address_cont VARCHAR(75),
@@ -83,7 +85,7 @@ INSERT INTO PASSENGER_INFORMATION
 passport_reg_id)
 VALUES
 (input_first_name, input_middle_name, input_last_name, input_gender, input_country_of_birth,
- input_nationality, share_passport_id);
+input_nationality, share_passport_id);
 
 
 INSERT INTO PASSENGER_TRAVEL_DOCUMENTS
@@ -93,9 +95,9 @@ VALUES
 
 
 INSERT INTO REGISTRATION_ID_LINKS
-(passport_reg_id, passport_id)
+(passport_reg_id, passport_id, input_passenger_record_id)
 VALUES
-(share_passport_id, input_passport_id);
+(share_passport_id, input_passport_id, input_passenger_record_id );
 
 
 INSERT INTO TRAVEL_DOCUMENTS_UPLOAD
@@ -105,8 +107,8 @@ VALUES
 
 
 INSERT INTO	SYSTEM_QUEUES
-(passport_id)
+(passport_id, passenger_record_id)
 VALUES
-(input_passport_id);
+(input_passport_id, input_passenger_record_id);
 
 END

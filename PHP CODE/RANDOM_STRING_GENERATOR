@@ -1,0 +1,21 @@
+<?php
+//Code to generate the record ids for resume/recover events.
+// This function will return
+// A random string of specified length
+function random_strings($length_of_string) {
+	
+	
+	// sha1 the timestamps and returns substring
+	// of specified length
+	return substr(sha1(time()), 0, $length_of_string);
+}
+
+// This function will generate
+// Random string of length 15
+echo random_strings(15);
+
+echo "\n";
+
+
+
+?>
