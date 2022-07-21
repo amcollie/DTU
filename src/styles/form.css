@@ -267,10 +267,14 @@
         cursor-pointer transition-colors;
   
       &:hover {
-        @apply text-red-600;
+        @apply text-red-600 bg-gray-100;
       }
     }
     
+    &:hover .clear {
+      @apply bg-gray-100;
+    }
+
     &:hover .filename,
     .filename:hover {
       @apply bg-gray-700 text-gray-200;
