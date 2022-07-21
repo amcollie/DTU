@@ -1,0 +1,289 @@
+.error-message-container {
+  @apply rounded bg-red-200 text-red-600 py-2 px-4 mb-2;
+}
+
+.validated-form {
+  @apply text-gray-700;
+
+  button[type='submit'] {
+    @apply mx-auto w-full max-w-md uppercase transition-colors duration-200
+      bg-[#17bee1] text-white border-none;
+
+    &:hover {
+      @apply bg-white text-black;
+    }
+  }
+
+  .heading {
+    @apply font-semibold tracking-wide text-lg mb-4
+      border-b border-b-gray-300;
+  }
+
+  .note {
+    @apply rounded flex items-center p-2 space-x-2 border-l-8 mb-3;
+
+    svg {
+      @apply mt-0.5;
+    }
+
+    &.info {
+      @apply bg-blue-100 border-l-blue-600;
+    }
+
+    &.warning {
+      @apply bg-yellow-100 border-l-yellow-600
+    }
+  }
+
+  :is(.input, .input--multi) ~ .heading {
+    @apply mt-6;
+  }
+
+  .input {
+    @apply relative flex space-y-1 flex-col pt-2 pb-4;
+
+    label:not(.form-switch, .form-checkbox) {
+      @apply font-semibold tracking-wider px-1;
+    }
+
+    input, select, textarea {
+      @apply p-2 rounded bg-white w-full
+        border border-solid border-gray-300
+        transition duration-200 ease-in-out;
+
+      &:focus {
+        @apply outline-offset-2 outline-2 outline-blue-500;
+      }
+
+      &[type='password'] {
+        @apply pr-10;
+      }
+    }
+
+    input[type='date'] {
+      line-height: 1.5rem;
+    }
+
+    .error {
+      @apply text-red-600 tracking-wide;
+    }
+
+    .hint {
+      @apply italic text-gray-500 px-1 text-sm;
+    }
+
+    &.has-error :is(input, select, textarea) {
+      &:not(:focus) {
+        @apply border-red-600;
+      }
+
+      &:focus {
+        @apply outline-red-400;
+      }
+    }
+  }
+
+  .input.list {
+    .input.heading {
+      @apply text-base mb-2 border-dashed;
+    }
+
+    .input.subheading {
+      @apply flex-row justify-between items-end p-0;
+
+      span {
+        @apply font-semibold text-gray-500;
+      }
+
+      button {
+        @apply py-0 px-2 m-0;
+      }
+    }
+
+    & > span:last-child {
+      @apply border-t border-dashed border-t-gray-300 py-4 mb-2;
+    }
+
+    span:not(.hint) {
+      @apply rounded space-x-3 transition-colors;
+
+      &:hover {
+        @apply bg-gray-100;
+      }
+    }
+  }
+
+  @screen md {
+    &:not(.stacked) .input {
+      @apply flex-row flex-wrap items-center;
+
+      label:not(.form-switch, .form-checkbox) {
+        width: 128px;
+      }
+
+      .error {
+        @apply w-full;
+      }
+    }
+
+    .input--multi {
+      @apply flex flex-wrap items-start -mx-2;
+      
+      & > .input {
+        @apply w-1/2 px-2;
+      }
+    }
+  }
+
+  button[type='submit'] {
+    @apply btn font-semibold py-2.5;
+  }
+}
+
+.form-switch {
+  @apply relative flex items-center pl-12;
+
+  input[type='checkbox'], input[type='radio'] {
+    @apply h-0 w-0 opacity-0;
+  }
+
+  &__slider {
+    @apply absolute rounded-full inset-y-0 left-0 w-10 bg-gray-600 transition-all cursor-pointer;
+  
+    &:before {
+      @apply absolute top-1 left-1 bottom-1 h-4 w-4 rounded-full bg-white transition-all duration-300;
+      content: "";
+    }
+    
+    input:checked + & {
+      @apply bg-blue-600;
+    }
+    
+    input:focus + & {
+      box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + &:before {
+      @apply translate-x-4;
+    }
+  }
+
+  &__label {
+    @apply font-semibold tracking-wider;
+  }
+}
+
+.form-checkbox {
+  @apply relative flex items-center pl-10;
+
+  input[type='checkbox'], input[type='radio'] {
+    @apply h-0 w-0 opacity-0;
+  }
+
+  &__check {
+    @apply absolute rounded inset-y-0 left-0 w-6 h-6 bg-gray-200
+      transition-all cursor-pointer border-2 border-gray-500;
+
+    svg {
+      @apply relative top-0.5 left-0.5 opacity-0 transition-opacity
+    }
+
+    input:checked + & {
+      @apply border-blue-800 bg-blue-600;
+    }
+    
+    input:focus + & {
+      box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + & svg {
+      @apply opacity-100;
+    }
+  }
+
+  &__label {
+    @apply font-semibold tracking-wider;
+  }
+}
+
+.form-file {
+  @apply relative flex flex-col items-center justify-center mb-4 p-3 rounded text-gray-500
+    w-full h-48 bg-white border-2 border-dotted border-gray-300 transition-all;
+
+  &:hover {
+    @apply border-gray-700 bg-gray-100 text-gray-600;
+  }
+
+  &:focus {
+    @apply border-blue-600;
+  }
+  
+  .input.has-error & {
+    @apply border-red-400;
+
+    &:hover {
+      @apply border-red-700 bg-red-100 text-gray-600;
+    }
+  
+    &:focus {
+      @apply border-red-600;
+    }
+  }
+
+  &[data-type='file'] {
+    @apply flex-row justify-start;
+    max-height: 3rem;
+
+    span {
+      @apply truncate ml-4;
+    }
+
+    svg:last-child {
+      @apply ml-auto text-red-400
+        cursor-pointer transition-colors;
+
+      &:hover {
+        @apply text-red-600;
+      }
+    }
+  }
+
+  &[data-type='image'] {
+    & + .hint.hint {
+      @apply mt-5;
+    }
+
+    img {
+      @apply object-scale-down h-full;
+    }
+  
+    .filename {
+      @apply absolute -bottom-4 z-10 w-11/12 rounded-lg
+        text-center truncate px-4 py-1 bg-gray-300 transition-colors;
+    }
+  
+    .clear {
+      @apply absolute right-2 top-2 rounded-full bg-white text-red-400
+        cursor-pointer transition-colors;
+  
+      &:hover {
+        @apply text-red-600;
+      }
+    }
+    
+    &:hover .filename,
+    .filename:hover {
+      @apply bg-gray-700 text-gray-200;
+    }
+    
+    @screen sm {
+      .filename {
+        @apply w-3/4;
+      }
+  
+      .clear {
+        @apply -right-3 -top-3;
+      }
+    }
+  }
+}

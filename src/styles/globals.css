@@ -1,0 +1,16 @@
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Styles that are placed in @layers */
+@import 'buttons.css';
+
+/* Styles that use classes within @layers */
+@import 'form.css';
+
+[data-hide]:not([data-hide='false']) {
+  @apply hidden
+}
+
+[data-disabled]:not([data-disabled='false']) {
+  @apply cursor-not-allowed;
+}
