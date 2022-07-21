@@ -49,6 +49,7 @@ const ImmigrationForm = () => {
         as: 'date',
       },
     ],
+
     '::Personal Details',
     'i::Please make sure that your name matches what is in your passport',
     [
@@ -78,6 +79,7 @@ const ImmigrationForm = () => {
         options: countries,
       }
     ],
+
     '::Passport Details',
     [
       'input_passport_id:Passport Number',
@@ -89,10 +91,36 @@ const ImmigrationForm = () => {
     ],
     {
       name: 'input_passport_upload',
-      label: 'Upload',
+      label: 'Passport Page',
       dropzoneText: 'Please upload the data page of your passport',
       as: 'file:image'
     },
+
+    '::Emergency Contact',
+    'i::This information will only be in case of an extenuating eemrgency',
+    [
+      'input_emergency_contact_firstname:First Name',
+      'input_emergency_contact_lastname:Last Name',
+      {
+        name: 'input_emergency_contact_relationship',
+        label: 'Relationship',
+        options: [
+          'Spouse / Significant Other',
+          'Parent',
+          'Grandparent',
+          'Child',
+          'Friend',
+          'Other',
+        ]
+      },
+      {
+        name: 'input_emergency_contact_phone',
+        label: 'Contact Phone #',
+        as: 'tel',
+      }
+      
+    ],
+
     {
       name: 'additional_members',
       as: 'switch',
