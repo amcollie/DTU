@@ -248,7 +248,7 @@ export const Switch = ({ label, ...props }) => {
   return (
     <div className={classes} key={props.name}>
       <label className='form-switch mt-2' name={field.name}>
-        <input type='checkbox' {...field} />
+        <input type='checkbox' {...field} checked={field.value} />
         <span className='form-switch__slider'/>
         <span className='form-switch__label'>{label}</span>
       </label>
