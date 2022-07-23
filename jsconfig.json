@@ -1,0 +1,24 @@
+{
+  "include": ["**/*"],
+  "exclude": ["node_modules", "dist"],
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "@layouts/*"    : ["src/layouts/*"],
+      "@components/*" : ["src/components/*"],
+      
+      "@hooks/*"      : ["src/lib/hooks/*"],
+      "@utils/*"      : ["src/lib/utils/*"],
+      "@models/*"     : ["src/lib/models/*"],
+      "@contexts/*"   : ["src/lib/contexts/*"],
+      "@services/*"   : ["src/lib/services/*"],
+      "@lib/*"        : ["src/lib/*"],
+
+      "@images/*"     : ["src/public/assets/img/*"],
+      "@styles/*"     : ["src/styles/*.css"],
+
+      "@/*": ["src/*"],
+      "@@/*": ["*"]
+    }
+  }
+}
