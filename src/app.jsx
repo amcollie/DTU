@@ -50,6 +50,31 @@ const ImmigrationForm = () => {
       },
     ],
 
+    '::Address Details',
+    {
+      name: 'input_address',
+      label: 'Address Line 1',
+    },
+    {
+      name: 'input_address_cont',
+      label: 'Address Line #2 (Optional)',
+      required: false,
+    },
+    [
+      {
+        name: 'input_city_town',
+        label: 'City',
+      },
+      {
+        name: 'input_state_province',
+        label: 'State/Province',
+      },
+      {
+        name: 'input_zip_postal_code',
+        label: 'Zip Code',
+        hint: 'If you do not have one, use 00000',
+      }
+    ],
     '::Personal Details',
     'i::Please make sure that your name matches what is in your passport',
     [
@@ -78,6 +103,33 @@ const ImmigrationForm = () => {
         label: 'Nationality',
         options: countries,
       }
+    ],
+    {
+      name: 'input_number_of_visits',
+      label: 'How many times have you visited The Bahamas in the last 6 months?',
+      type: 'number',
+      attributes: {
+        min: 0,
+      }
+    },
+
+    '::Contact Details',
+    {
+      name: 'input_email_address',
+      label: 'Email Address',
+      as: 'email'
+    },
+    [
+      {
+        name: 'input_mobile',
+        label: 'Mobile Phone #',
+        as: 'tel',
+      },
+      {
+        name: 'input_home',
+        label: 'Home Phone #',
+        as: 'tel',
+      },
     ],
 
     '::Passport Details',
@@ -128,7 +180,7 @@ const ImmigrationForm = () => {
       // default: true,
     },
     {
-      name: 'travellers',
+      name: 'member_details',
       type: 'array',
       label: 'Family Members',
       countLabel: 'Member',
@@ -142,10 +194,51 @@ const ImmigrationForm = () => {
           'last_name',
         ],
         {
-          name: 'vaccinated',
-          label: 'Is this person fully vaccinated?',
-          as: 'select:boolean',
+          name: 'email',
+          label: 'Email Address',
+          as: 'email'
         },
+        [
+          {
+            name: 'dob',
+            label: 'Date of Birth',
+            as: 'date',
+          },
+          {
+            name: 'sex',
+            label: 'Gender',
+            options: ['Male', 'Female']
+          },
+          {
+            name: 'country_of_birth',
+            label: 'Country of Birth',
+            options: countries,
+          },
+          {
+            name: 'nationality',
+            label: 'Nationality',
+            options: countries,
+          }
+        ],
+        [
+          'input_passport_id:Passport Number',
+          {
+            name: 'input_expiration_date',
+            label: 'Expiration Date',
+            as: 'date'
+          },
+        ],
+        {
+          name: 'input_passport_upload',
+          label: 'Passport Page',
+          dropzoneText: 'Please upload the data page of your passport',
+          as: 'file:image'
+        },
+        // {
+        //   name: 'vaccinated',
+        //   label: 'Is this person fully vaccinated?',
+        //   as: 'select:boolean',
+        // },
       ]
     }
   ]
