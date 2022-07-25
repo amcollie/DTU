@@ -37,24 +37,22 @@ const normalize = f => {
     return { ...base, name: f, label: f.initialCaps() }
   }
 
+  const final = { ...base, ...f }
+
   if (f.heading == 'SPACER') {
-    f.heading = '<span>&nbsp;</span>'
+    final.heading = '<span>&nbsp;</span>'
+  }
+
+  if (f.as == 'switch' || f.as == 'checkbox') {
+    final.type = 'checkbox'
   }
 
   if (f.as == 'switch') {
-    f.type = 'boolean'
-    f.required = !!f.required || false
-  }
-  
-  if (f.as == 'checkbox') {
-    f.type = 'boolean'
+    final.required = !!f.required || false
   }
 
-  return {
-    ...base,
-    ...f,
-    label: f.label ?? f.name?.initialCaps()
-  }
+  final.label = final.label ?? f.name?.initialCaps()
+  return final
 }
 
 export default normalize
