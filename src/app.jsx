@@ -205,7 +205,8 @@ const ImmigrationForm = () => {
       {
         name: 'input_local_city',
         label: 'City / Settlement',
-        options: values => ARRIVAL_PORTS[values.input_local_island],
+        options: values => ARRIVAL_PORTS[values.input_local_island]
+          ?? 'Please select an island island first',
       }
     ],
     {

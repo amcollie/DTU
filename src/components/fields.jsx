@@ -214,11 +214,20 @@ export function Password ({ label, attributes, ...props }) {
 export function Select ({ label, attributes, options, ...props }) {
   const [field, meta] = useField(props)
   const { values } = useFormikContext()
+  const opts = getOptions(options, values)
+
+  if (typeof opts == 'string') {
+    return markup(props, meta, label, (
+      <select {...field} {...attributes} disabled>
+        <option value=''>{opts}</option>
+      </select>
+    ))
+  }
 
   return markup(props, meta, label, (
     <select {...field} {...attributes}>
       <option value=''>(Please select an option)</option>
-      {getOptions(options, values)}
+      {opts}
     </select>
   ))
 }
@@ -293,6 +302,7 @@ export const Checkbox = ({ label, ...props }) => {
 function getOptions (options, values) {
   const opts = typeof options == 'function' ? options(values) : options
   if (!opts) return null
+  if (typeof opts == 'string') return opts
 
   if (Array.isArray(opts)) {
     return opts.map(opt => {
