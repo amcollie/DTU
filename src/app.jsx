@@ -1,12 +1,10 @@
 import { Fragment } from 'react'
 
 import ValidatedForm from '@components/form'
+import ARRIVAL_PORTS from '@data/ports-of-arrival'
+import COUNTRIES from '@data/countries'
 
-const countries = [
-  'United States',
-  'United Kingdom',
-  'Canada',
-]
+const notTravellingForWork = f => f.input_trip_purpose != 'Employment'
 
 const ImmigrationForm = () => {
   const fields = [
@@ -36,7 +34,7 @@ const ImmigrationForm = () => {
       {
         name: 'input_port_of_embarcation',
         label: 'Country of Embarkation',
-        options: countries
+        options: COUNTRIES
       },
       {
         name: 'input_date_of_arrival',
@@ -96,12 +94,12 @@ const ImmigrationForm = () => {
       {
         name: 'input_country_of_birth',
         label: 'Country of Birth',
-        options: countries,
+        options: COUNTRIES,
       },
       {
         name: 'input_nationality',
         label: 'Nationality',
-        options: countries,
+        options: COUNTRIES,
       }
     ],
     {
@@ -145,8 +143,99 @@ const ImmigrationForm = () => {
       name: 'input_passport_upload',
       label: 'Passport Page',
       dropzoneText: 'Please upload the data page of your passport',
-      as: 'file:image'
+      as: 'file:image',
+      hint: <strong>Accepts .jpg images only</strong>,
+      accept: {
+        'image/*': ['.jpg', 'jpeg'],
+      },
+      attributes: {
+        accept: 'image/jpeg'
+      }
     },
+
+    '::Where Will You Stay?',
+    [
+      {
+        name: 'input_trip_purpose',
+        label: 'Reason For Visiting',
+        options: [
+          'Boating',
+          'Business',
+          'Casino',
+          'Conference',
+          'Diving',
+          'Fishing',
+          'Employment',
+          'Honeymoon',
+          'Private Flying',
+          'Vacation',
+          'Visiting Friends And Relatives',
+          'Wedding',
+          'Other',
+        ]
+      },
+      {
+        name: 'input_type_of_accomodation',
+        label: 'Type of Accomodation',
+        options: [
+          {
+            label: 'Resort/Hotel',
+            value: 'Hotel'
+          },
+          'Rented Aptartment/Villa',
+          'Own Property',
+          'Time Share',
+          'Friends/Relatives',
+          'Private Boat',
+        ]
+      },
+    ],
+    {
+      name: 'input_hotel_name',
+      label: 'Hotel Name',
+      hide: values => values.input_type_of_accomodation != 'Hotel'
+    },
+    [
+      {
+        name: 'input_local_island',
+        label: 'Island',
+        options: Object.keys(ARRIVAL_PORTS)
+          .reduce((o, k) => ({ ...o, [k]: k }), {}),
+      },
+      {
+        name: 'input_local_city',
+        label: 'City / Settlement',
+        options: values => ARRIVAL_PORTS[values.input_local_island],
+      }
+    ],
+    {
+      name: 'input_local_address',
+      label: 'Street Address',
+      hide: values => values.input_type_of_accomodation == 'Hotel'
+    },
+
+    {
+      heading: 'Sponsor Details',
+      hide: notTravellingForWork
+    },
+    [
+      {
+        name: 'input_sponsor_name',
+        label: 'First Name',
+        hide: notTravellingForWork
+      },
+      {
+        name: 'input_sponsor_last_name',
+        label: 'Last Name',
+        hide: notTravellingForWork
+      },
+      {
+        name: 'input_sponsor_phone_number',
+        label: 'Phone Number',
+        as: 'tel',
+        hide: notTravellingForWork
+      },
+    ],
 
     '::Emergency Contact',
     'i::This information will only be in case of an extenuating eemrgency',
@@ -170,21 +259,19 @@ const ImmigrationForm = () => {
         label: 'Contact Phone #',
         as: 'tel',
       }
-      
     ],
 
     {
       name: 'additional_members',
       as: 'switch',
       label: 'I am travelling with family members',
-      // default: true,
     },
     {
       name: 'member_details',
       type: 'array',
       label: 'Family Members',
       countLabel: 'Member',
-      hide: f => !f.additional_members,
+      hide: values => !values.additional_members,
       min: 1,
       max: 3,
       fields: [
@@ -212,12 +299,12 @@ const ImmigrationForm = () => {
           {
             name: 'country_of_birth',
             label: 'Country of Birth',
-            options: countries,
+            options: COUNTRIES,
           },
           {
             name: 'nationality',
             label: 'Nationality',
-            options: countries,
+            options: COUNTRIES,
           }
         ],
         [
