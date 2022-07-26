@@ -334,13 +334,12 @@ const ImmigrationForm = () => {
   const submit = async (form, values) => {
     const familySize = 1 + values.travellers.length
 
-
   }
 
   return (
     <ValidatedForm fields={fields} onSubmit={submit}>
       <footer>
-        <button type='submit'>Submit</button>
+        <button name='submit' type='submit'>Submit</button>
       </footer>
     </ValidatedForm>
   )
