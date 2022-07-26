@@ -1,6 +1,6 @@
-import { useState, createElement, Fragment, useCallback } from 'react'
-import { useField } from 'formik'
-import { FaCheck, FaFilePdf, FaEye, FaEyeSlash, FaInfoCircle } from 'react-icons/fa'
+import { useState, createElement, Fragment, useCallback, isValidElement, cloneElement } from 'react'
+import { useField, useFormikContext } from 'formik'
+import { FaCheck, FaFilePdf, FaEye, FaEyeSlash } from 'react-icons/fa'
 import { AiFillCloseCircle } from 'react-icons/ai'
 import { VscWarning, VscInfo } from 'react-icons/vsc'
 import { useDropzone } from 'react-dropzone'
@@ -25,12 +25,14 @@ const markup = (props, meta, label, input) => {
     <div className='error'>{meta.error}</div>
   ) : null
 
-  const hint = props.hint ? (
-    <span
-      className='hint'
-      dangerouslySetInnerHTML={{ __html: props.hint }}
-    />
-  ) : null
+  const hint = isValidElement(props.hint)
+    ? <div className='hint'>{props.hint}</div>
+    : props.hint ? (
+      <span
+        className='hint'
+        dangerouslySetInnerHTML={{ __html: props.hint }}
+      />
+    ) : null
 
   return (
     <div className={withError('input', displayError)} key={props.name}>
@@ -99,7 +101,7 @@ export function File ({ label, attributes, accept, ...props }) {
     props.hint = props.hint ?? 'Accepts: PDF'
     props.dropzoneText = props.dropzoneText ?? 'Select or Drag PDF Here'
   } else if (props.as == 'file:image') {
-    attrs.accept = 'image/*'
+    attrs.accept = attrs.accept ?? 'image/*'
     props.hint = props.hint ?? 'Accepts: JPG/PNG/GIF'
     props.dropzoneText = props.dropzoneText ?? 'Select or Drag Image Here'
   }
@@ -211,11 +213,21 @@ export function Password ({ label, attributes, ...props }) {
 
 export function Select ({ label, attributes, options, ...props }) {
   const [field, meta] = useField(props)
+  const { values } = useFormikContext()
+  const opts = getOptions(options, values)
+
+  if (typeof opts == 'string') {
+    return markup(props, meta, label, (
+      <select {...field} {...attributes} disabled>
+        <option value=''>{opts}</option>
+      </select>
+    ))
+  }
 
   return markup(props, meta, label, (
     <select {...field} {...attributes}>
       <option value=''>(Please select an option)</option>
-      {getOptions(options)}
+      {opts}
     </select>
   ))
 }
@@ -238,17 +250,21 @@ export function Textarea ({ label, attributes, ...props }) {
 }
 
 export const Switch = ({ label, ...props }) => {
-  const [field, meta] = useField(props)
+  const [field, meta, helpers] = useField(props)
   const displayError = meta.touched && meta.error
-  const classes = withError('input', displayError)
+  const classes = withError('input mt-2', displayError)
   const error = displayError ? (
     <div className='error'>{meta.error}</div>
   ) : null
 
+  const toggle = () => {
+    helpers.setValue(!field.value)
+  }
+
   return (
     <div className={classes} key={props.name}>
-      <label className='form-switch mt-2' name={field.name}>
-        <input type='checkbox' {...field} checked={field.value} />
+      <label className='form-switch' htmlFor={field.name} onClick={toggle}>
+        <input type='checkbox' {...field} />
         <span className='form-switch__slider'/>
         <span className='form-switch__label'>{label}</span>
       </label>
@@ -258,16 +274,20 @@ export const Switch = ({ label, ...props }) => {
 }
 
 export const Checkbox = ({ label, ...props }) => {
-  const [field, meta] = useField(props)
+  const [field, meta, helpers] = useField(props)
   const displayError = meta.touched && meta.error
-  const classes = withError('input', displayError)
+  const classes = withError('input mt-2', displayError)
   const error = displayError ? (
     <div className='error'>{meta.error}</div>
   ) : null
 
+  const toggle = () => {
+    helpers.setValue(!field.value)
+  }
+
   return (
     <div className={classes} key={props.name}>
-      <label className='form-checkbox mt-2' name={field.name}>
+      <label className='form-checkbox' htmlFor={field.name} onClick={toggle}>
         <input type='checkbox' {...field} />
         <span className='form-checkbox__check'>
           <FaCheck size={16} fill='#FFF' />
@@ -279,9 +299,13 @@ export const Checkbox = ({ label, ...props }) => {
   )
 }
 
-function getOptions (options) {
-  if (Array.isArray(options)) {
-    return options.map(opt => {
+function getOptions (options, values) {
+  const opts = typeof options == 'function' ? options(values) : options
+  if (!opts) return null
+  if (typeof opts == 'string') return opts
+
+  if (Array.isArray(opts)) {
+    return opts.map(opt => {
       const value = opt.value ?? opt
       const label = opt.label ?? opt?.initialCaps()
 
@@ -289,7 +313,7 @@ function getOptions (options) {
     })
   }
 
-  return Object.entries(options).map(([label, value]) => (
+  return Object.entries(opts).map(([label, value]) => (
     <option key={value} value={value}>{label}</option>
   ))
 }

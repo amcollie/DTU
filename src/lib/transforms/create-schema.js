@@ -12,14 +12,23 @@ const transform = (fields = []) => {
       return schema
     }
 
-    const { name, type, validators, required } = f
-    if (f.heading || f.info || f.warning || (type && !yup[type])) return schema
+    const { name, label, type, validators, required } = f
+
+    if (
+      f.heading
+      || f.info
+      || f.warning
+      || (type && type != 'checkbox' && !yup[type])
+    ) return schema
+
+    const initial = (type == 'checkbox' ? yup.bool : yup[type ?? 'string'])()
+      .label(label)
 
     const final = validators.reduce((comp, v) => {
       const [type, ...params] = Array.isArray(v) ? v : v.split(':')
       if (!comp[type]) return comp
       return comp[type](...params)
-    }, yup[type ?? 'string']().label(f.label))
+    }, initial)
 
     if (type == 'array') {
       const sub = transform(normalize(f.fields))

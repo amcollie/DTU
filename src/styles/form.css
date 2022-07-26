@@ -148,10 +148,12 @@
   }
 
   &__slider {
-    @apply absolute rounded-full inset-y-0 left-0 w-10 bg-gray-600 transition-all cursor-pointer;
+    @apply absolute rounded-full inset-y-0 left-0 w-10 bg-gray-600
+      transition-all cursor-pointer;
   
     &:before {
-      @apply absolute top-1 left-1 bottom-1 h-4 w-4 rounded-full bg-white transition-all duration-300;
+      @apply absolute top-1 left-1 bottom-1 h-4 w-4 rounded-full
+      bg-white transition-all duration-300;
       content: "";
     }
     
@@ -164,7 +166,7 @@
     }
 
     input:checked + &:before {
-      @apply translate-x-4;
+      @apply left-5;
     }
   }
 
@@ -185,7 +187,7 @@
       transition-all cursor-pointer border-2 border-gray-500;
 
     svg {
-      @apply relative top-0.5 left-0.5 opacity-0 transition-opacity
+      @apply relative top-0.5 left-1 opacity-0 transition-opacity
     }
 
     input:checked + & {
@@ -264,7 +266,7 @@
   
     .clear {
       @apply absolute right-2 top-2 rounded-full bg-white text-red-400
-        cursor-pointer transition-colors;
+        cursor-pointer transition-colors h-6 w-6;
   
       &:hover {
         @apply text-red-600 bg-gray-100;

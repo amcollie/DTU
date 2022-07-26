@@ -13,6 +13,7 @@
       "@contexts/*"   : ["src/lib/contexts/*"],
       "@services/*"   : ["src/lib/services/*"],
       "@lib/*"        : ["src/lib/*"],
+      "@data/*"       : ["src/data/*"],
 
       "@images/*"     : ["src/public/assets/img/*"],
       "@styles/*"     : ["src/styles/*.css"],

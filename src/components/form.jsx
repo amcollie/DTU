@@ -123,6 +123,8 @@ function getInitialValues (fields = [], defaults) {
 
 function getFields (fields = [], values = {}, parent, index) {
   return fields.map((field, i) => {
+    if (field.hide?.(values, index) || field.hide === true) return null
+
     if (Array.isArray(field)) {
       const list = getFields(field, values, parent, index)
       return <div className='input--multi' key={i + 1}>{list}</div>
@@ -140,14 +142,18 @@ function getFields (fields = [], values = {}, parent, index) {
       )
     }
 
-    if (f.hide?.(values, index) || f.hide === true) return null
     if (typeof index == 'number') f.name = `${parent}.${index}.${f.name}`
 
-    if (f.heading) return <Fields.Heading {...f} key={f.heading} />
-    if (f.info) return <Fields.Info {...f} key={f.info} />
-    if (f.warning) return <Fields.Warning {...f} key={f.warning} />
-    if (f.spacer) return <Fields.Spacer key={i} />
-    if (f.options || f.as == 'select') return <Fields.Select {...f} key={f.name} />
+    if (f.heading)
+      return <Fields.Heading {...f} key={f.heading} />
+    if (f.info)
+      return <Fields.Info {...f} key={f.info} />
+    if (f.warning)
+      return <Fields.Warning {...f} key={f.warning} />
+    if (f.spacer)
+      return <Fields.Spacer key={i} />
+    if (f.options || f.as == 'select')
+      return <Fields.Select {...f} key={f.name} />
 
     switch (f.as) {
       case 'textarea':
