@@ -5,7 +5,7 @@ IN input_passenger_reg_amount INT,
 
 IN input_passenger_record_id VARCHAR(150),
 
-
+#PASSENGER_ADDRESS
 IN input_country VARCHAR(100),
 IN input_address VARCHAR(75),
 IN input_address_cont VARCHAR(75),
@@ -13,6 +13,7 @@ IN input_city_town VARCHAR(75),
 IN input_state_province VARCHAR(75),
 IN input_zip_postal_code VARCHAR(10),
 
+#PASSENGER_ARRIVAL_DEPARTURE_INFO
 IN input_number_of_visits INT(11), 
 
 IN input_arrival_port VARCHAR(80), 
@@ -30,8 +31,19 @@ IN input_emergency_contact_lastname VARCHAR(75),
 IN input_emergency_contact_relationship VARCHAR(25), 
 IN input_emergency_contact_phone VARCHAR(15),
 
+#PASSENGER_LOCAL_ADDRESS_INFO
+IN input_trip_purpose VARCHAR(75), 
+IN input_type_of_accommodation VARCHAR(75),
+IN input_hotel_name VARCHAR(45),
+IN input_local_city VARCHAR(45),
+IN input_local_address VARCHAR(75),
+IN input_sponsor_first_name VARCHAR(75),
+IN input_sponsor_last_name VARCHAR(75),
+IN input_sponsor_phone_number VARCHAR(45),
+
 IN input_passport_id VARCHAR(75), 
 
+#PASSENGER_CONTACT_INFORMATION
 IN input_mobile VARCHAR(15), 
 IN input_home_phone VARCHAR(15), 
 IN input_work_phone VARCHAR(15), 
@@ -72,8 +84,8 @@ IN input3_passport_id varchar(75),
 
 IN input3_number_of_visits int(11), 
 IN input3_mobile varchar(15), 
-IN input3_home_phone varchar(15), 
-IN input3_work_phone varchar(15), 
+#IN input3_home_phone varchar(15), 
+#IN input3_work_phone varchar(15), 
 IN input3_email_address varchar(145), 
 IN input3_first_name varchar(75), 
 IN input3_middle_name varchar(75),
@@ -92,8 +104,8 @@ IN input4_passport_id varchar(75),
 
 IN input4_number_of_visits int(11), 
 IN input4_mobile varchar(15), 
-IN input4_home_phone varchar(15), 
-IN input4_work_phone varchar(15), 
+#IN input4_home_phone varchar(15), 
+#IN input4_work_phone varchar(15), 
 IN input4_email_address varchar(145), 
 IN input4_first_name varchar(75), 
 IN input4_middle_name varchar(75),
@@ -107,6 +119,8 @@ IN input4_immigration_status varchar(45),
 IN input4_expiration_date date,
 IN input4_photo_upload text, 
 IN input4_passport_upload text
+
+
 )
 BEGIN 
 
@@ -133,6 +147,16 @@ DECLARE share_emergency_contact_phone VARCHAR(15);
 DECLARE share_home_phone VARCHAR(15);
 DECLARE share_work_phone VARCHAR(15);
 
+DECLARE share_trip_purpose VARCHAR(75); 
+DECLARE share_type_of_accommodation VARCHAR(75);
+DECLARE share_hotel_name VARCHAR(45);
+DECLARE share_local_city VARCHAR(45);
+DECLARE share_local_address VARCHAR(75);
+DECLARE share_sponsor_first_name VARCHAR(75);
+DECLARE share_sponsor_last_name VARCHAR(75);
+DECLARE share_sponsor_phone_number VARCHAR(45);
+
+
 DECLARE add_passenger_reg_amount INT;
 DECLARE share_passport_id VARCHAR(75);
 DECLARE share_passenger_record_id VARCHAR(150);
@@ -141,6 +165,15 @@ SET add_passenger_reg_amount = "1";
 
 SET share_passport_id = input_passport_id;
 SET	share_passenger_record_id = input_passenger_record_id;
+
+SET share_trip_purpose = input_trip_purpose;
+SET share_type_of_accommodation = input_type_of_accommodation;
+SET share_hotel_name = input_hotel_name;
+SET share_local_city = input_local_city;
+SET share_local_address = input_local_address;
+SET share_sponsor_first_name = input_sponsor_first_name;
+SET share_sponsor_last_name = input_sponsor_last_name;
+SET share_sponsor_phone_number = input_sponsor_phone_number;
 
 SET share_country = input_country;
 SET share_address = input_address;
@@ -192,10 +225,17 @@ input_emergency_contact_lastname, input_emergency_contact_relationship, input_em
 
 INSERT INTO PASSENGER_INFORMATION
 (first_name, middle_name, last_name, gender, country_of_birth, nationality,
-passport_reg_id, passenger_record_id)
+input_passport_id, passenger_record_id)
 VALUES
 (input_first_name, input_middle_name, input_last_name, input_gender, input_country_of_birth,
-input_nationality, share_passport_id, input_passenger_record_id);
+input_nationality, input_passport_id, input_passenger_record_id);
+
+INSERT INTO PASSENGER_LOCAL_ADDRESS_INFO
+(trip_purpose, type_of_accommodation, hotel_name, local_city, local_address, sponsor_first_name, sponsor_last_name,
+sponsor_phone_number, passport_id, passenger_record_id)
+VALUES
+(input_trip_purpose, input_type_of_accommodation, input_hotel_name, input_local_city, input_local_address, input_sponsor_first_name, input_sponsor_last_name,
+input_sponsor_phone_number, input_passport_id, input_passenger_record_id);
 
 INSERT INTO PASSENGER_TRAVEL_DOCUMENTS
 (passport_id, document_type, immigration_status, expiration_date)
@@ -271,18 +311,31 @@ share_emergency_contact_lastname, share_emergency_contact_relationship, share_em
 
 INSERT INTO PASSENGER_INFORMATION
 (first_name, middle_name, last_name, gender, country_of_birth, nationality,
-passport_reg_id, passenger_record_id)
+passport_id, passenger_record_id)
 VALUES
 (input_first_name, input_middle_name, input_last_name, input_gender, input_country_of_birth,
-input_nationality, share_passport_id, input_passenger_record_id);
+input_nationality, input_passport_id, input_passenger_record_id);
 
 INSERT INTO PASSENGER_INFORMATION
-(first_name, middle_name, last_name, gender, date_of_birth, country_of_birth, nationality, passport_reg_id,
+(first_name, middle_name, last_name, gender, date_of_birth, country_of_birth, nationality, passport_id,
  passenger_record_id)
 VALUES
 (input2_first_name, input2_middle_name, input2_last_name, input2_gender, input2_date_of_birth, input2_country_of_birth,
-input2_nationality, share_passport_id, share_passenger_record_id);
+input2_nationality, input2_passport_id, share_passenger_record_id);
 
+INSERT INTO PASSENGER_LOCAL_ADDRESS_INFO
+(trip_purpose, type_of_accommodation, hotel_name, local_city, local_address, sponsor_first_name, sponsor_last_name,
+sponsor_phone_number, passport_id, passenger_record_id)
+VALUES
+(input_trip_purpose, input_type_of_accommodation, input_hotel_name, input_local_city, input_local_address, input_sponsor_first_name, input_sponsor_last_name,
+input_sponsor_phone_number, input_passport_id, input_passenger_record_id);
+
+INSERT INTO PASSENGER_LOCAL_ADDRESS_INFO
+(trip_purpose, type_of_accommodation, hotel_name, local_city, local_address, sponsor_first_name, sponsor_last_name,
+sponsor_phone_number, passport_id, passenger_record_id)
+VALUES
+(share_trip_purpose, share_type_of_accommodation, share_hotel_name, share_local_city, share_local_address, share_sponsor_first_name, share_sponsor_last_name,
+share_sponsor_phone_number, input2_passport_id, share_passenger_record_id);
 
 INSERT INTO PASSENGER_TRAVEL_DOCUMENTS
 (passport_id, document_type, immigration_status, expiration_date)
@@ -400,25 +453,45 @@ share_emergency_contact_lastname, share_emergency_contact_relationship, share_em
 
 INSERT INTO PASSENGER_INFORMATION
 (first_name, middle_name, last_name, gender, country_of_birth, nationality,
-passport_reg_id, passenger_record_id)
+passport_id, passenger_record_id)
 VALUES
 (input_first_name, input_middle_name, input_last_name, input_gender, input_country_of_birth,
-input_nationality, share_passport_id, input_passenger_record_id);
+input_nationality, input_passport_id, input_passenger_record_id);
 
 INSERT INTO PASSENGER_INFORMATION
-(first_name, middle_name, last_name, gender, date_of_birth, country_of_birth, nationality, passport_reg_id,
+(first_name, middle_name, last_name, gender, date_of_birth, country_of_birth, nationality, passport_id,
  passenger_record_id)
 VALUES
 (input2_first_name, input2_middle_name, input2_last_name, input2_gender, input2_date_of_birth, input2_country_of_birth,
-input2_nationality, share_passport_id, share_passenger_record_id);
+input2_nationality, input2_passport_id, share_passenger_record_id);
 
 INSERT INTO PASSENGER_INFORMATION
 (first_name, middle_name, last_name, gender, date_of_birth, country_of_birth, nationality, passport_reg_id,
  passenger_record_id)
 VALUES
 (input3_first_name, input3_middle_name, input3_last_name, input3_gender, input3_date_of_birth, input3_country_of_birth,
-input3_nationality, share_passport_id, share_passenger_record_id);
+input3_nationality, input3_passport_id, share_passenger_record_id);
 
+INSERT INTO PASSENGER_LOCAL_ADDRESS_INFO
+(trip_purpose, type_of_accommodation, hotel_name, local_city, local_address, sponsor_first_name, sponsor_last_name,
+sponsor_phone_number, passport_id, passenger_record_id)
+VALUES
+(input_trip_purpose, input_type_of_accommodation, input_hotel_name, input_local_city, input_local_address, input_sponsor_first_name, input_sponsor_last_name,
+input_sponsor_phone_number, input_passport_id, input_passenger_record_id);
+
+INSERT INTO PASSENGER_LOCAL_ADDRESS_INFO
+(trip_purpose, type_of_accommodation, hotel_name, local_city, local_address, sponsor_first_name, sponsor_last_name,
+sponsor_phone_number, passport_id, passenger_record_id)
+VALUES
+(share_trip_purpose, share_type_of_accommodation, share_hotel_name, share_local_city, share_local_address, share_sponsor_first_name, share_sponsor_last_name,
+share_sponsor_phone_number, input2_passport_id, share_passenger_record_id);
+
+INSERT INTO PASSENGER_LOCAL_ADDRESS_INFO
+(trip_purpose, type_of_accommodation, hotel_name, local_city, local_address, sponsor_first_name, sponsor_last_name,
+sponsor_phone_number, passport_id, passenger_record_id)
+VALUES
+(share_trip_purpose, share_type_of_accommodation, share_hotel_name, share_local_city, share_local_address, share_sponsor_first_name, share_sponsor_last_name,
+share_sponsor_phone_number, input3_passport_id, share_passenger_record_id);
 
 INSERT INTO PASSENGER_TRAVEL_DOCUMENTS
 (passport_id, document_type, immigration_status, expiration_date)
@@ -575,17 +648,17 @@ share_emergency_contact_lastname, share_emergency_contact_relationship, share_em
 
 INSERT INTO PASSENGER_INFORMATION
 (first_name, middle_name, last_name, gender, country_of_birth, nationality,
-passport_reg_id, passenger_record_id)
+passport_id, passenger_record_id)
 VALUES
 (input_first_name, input_middle_name, input_last_name, input_gender, input_country_of_birth,
-input_nationality, share_passport_id, input_passenger_record_id);
+input_nationality, input_passport_id, input_passenger_record_id);
 
 INSERT INTO PASSENGER_INFORMATION
-(first_name, middle_name, last_name, gender, date_of_birth, country_of_birth, nationality, passport_reg_id,
+(first_name, middle_name, last_name, gender, date_of_birth, country_of_birth, nationality, passport_id,
  passenger_record_id)
 VALUES
 (input2_first_name, input2_middle_name, input2_last_name, input2_gender, input2_date_of_birth, input2_country_of_birth,
-input2_nationality, share_passport_id, share_passenger_record_id);
+input2_nationality, input2_passport_id, share_passenger_record_id);
 
 INSERT INTO PASSENGER_INFORMATION
 (first_name, middle_name, last_name, gender, date_of_birth, country_of_birth, nationality, passport_reg_id,
@@ -595,12 +668,39 @@ VALUES
 input3_nationality, share_passport_id, share_passenger_record_id);
 
 INSERT INTO PASSENGER_INFORMATION
-(first_name, middle_name, last_name, gender, date_of_birth, country_of_birth, nationality, passport_reg_id,
+(first_name, middle_name, last_name, gender, date_of_birth, country_of_birth, nationality, passport_id,
  passenger_record_id)
 VALUES
 (input4_first_name, input4_middle_name, input4_last_name, input4_gender, input4_date_of_birth, input4_country_of_birth,
 input4_nationality, share_passport_id, share_passenger_record_id);
 
+INSERT INTO PASSENGER_LOCAL_ADDRESS_INFO
+(trip_purpose, type_of_accommodation, hotel_name, local_city, local_address, sponsor_first_name, sponsor_last_name,
+sponsor_phone_number, passport_id, passenger_record_id)
+VALUES
+(input_trip_purpose, input_type_of_accommodation, input_hotel_name, input_local_city, input_local_address, input_sponsor_first_name, input_sponsor_last_name,
+input_sponsor_phone_number, input_passport_id, input_passenger_record_id);
+
+INSERT INTO PASSENGER_LOCAL_ADDRESS_INFO
+(trip_purpose, type_of_accommodation, hotel_name, local_city, local_address, sponsor_first_name, sponsor_last_name,
+sponsor_phone_number, passport_id, passenger_record_id)
+VALUES
+(share_trip_purpose, share_type_of_accommodation, share_hotel_name, share_local_city, share_local_address, share_sponsor_first_name, share_sponsor_last_name,
+share_sponsor_phone_number, input2_passport_id, share_passenger_record_id);
+
+INSERT INTO PASSENGER_LOCAL_ADDRESS_INFO
+(trip_purpose, type_of_accommodation, hotel_name, local_city, local_address, sponsor_first_name, sponsor_last_name,
+sponsor_phone_number, passport_id, passenger_record_id)
+VALUES
+(share_trip_purpose, share_type_of_accommodation, share_hotel_name, share_local_city, share_local_address, share_sponsor_first_name, share_sponsor_last_name,
+share_sponsor_phone_number, input3_passport_id, share_passenger_record_id);
+
+INSERT INTO PASSENGER_LOCAL_ADDRESS_INFO
+(trip_purpose, type_of_accommodation, hotel_name, local_city, local_address, sponsor_first_name, sponsor_last_name,
+sponsor_phone_number, passport_id, passenger_record_id)
+VALUES
+(share_trip_purpose, share_type_of_accommodation, share_hotel_name, share_local_city, share_local_address, share_sponsor_first_name, share_sponsor_last_name,
+share_sponsor_phone_number, input4_passport_id, share_passenger_record_id);
 
 INSERT INTO PASSENGER_TRAVEL_DOCUMENTS
 (passport_id, document_type, immigration_status, expiration_date)
