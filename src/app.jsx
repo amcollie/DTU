@@ -3,6 +3,7 @@ import { Fragment } from 'react'
 import ValidatedForm from '@components/form'
 import ARRIVAL_PORTS from '@data/ports-of-arrival'
 import COUNTRIES from '@data/countries'
+import Swal from 'sweetalert2'
 
 const countries = COUNTRIES.map(c => c.name)
 
@@ -71,6 +72,7 @@ const ImmigrationForm = () => {
     {
       name: 'input_passport_upload',
       label: 'Passport Page',
+      required: false,
       dropzoneText: 'Please upload the data page of your passport',
       as: 'file:image',
       hint: <strong>Accepts .jpg images only</strong>,
@@ -335,7 +337,7 @@ const ImmigrationForm = () => {
       label: 'I am travelling with family members',
     },
     {
-      name: 'member_details',
+      name: 'travel_members',
       type: 'array',
       label: 'Family Members',
       countLabel: 'Member',
@@ -386,6 +388,7 @@ const ImmigrationForm = () => {
         {
           name: 'input_passport_upload',
           label: 'Passport Page',
+          required: false,
           dropzoneText: 'Please upload the data page of your passport',
           as: 'file:image'
         },
@@ -398,41 +401,76 @@ const ImmigrationForm = () => {
     }
   ]
 
-  const submit = async values => {
-    const payload = Object.entries({
+  const submit = async (values) => {
+    const body = Object.entries({
       ...values,
       input_passenger_reg_amount: 1 + (values.travellers?.length ?? 0),
       input_local_city: `${values.input_local_island} - ${values.input_local_city}`
     }).reduce((form, [k, v]) => {
       if (Array.isArray(v)) return form
-      form.append(k, typeof v == 'string' ? v.toUpperCase() : v)
+      form.append(k, typeof v == 'string' ? v?.toUpperCase() : v)
       return form
     }, new FormData())
 
     const { length } = values.travel_members
     for (let i = 0; i < length; i++) {
-      payload.append(`input${i + 2}_passport_id`, values.travel_members[i].passport_id.toUpperCase())
-      payload.append(`input${i + 2}_number_of_visits`, values.travel_members[i].number_of_visits)
-      payload.append(`input${i + 2}_mobile`, values.travel_members[i].mobile)
-      payload.append(`input${i + 2}_email_address`, values.travel_members[i].email_address.toUpperCase())
-      payload.append(`input${i + 2}_first_name`, values.travel_members[i].first_name.toUpperCase()) 
-      payload.append(`input${i + 2}_middle_name`, values.travel_members[i].middle_name.toUpperCase())
-      payload.append(`input${i + 2}_last_name`, values.travel_members[i].last_name.toUpperCase())
-      payload.append(`input${i + 2}_gender`, values.travel_members[i].gender.toUpperCase())
-      payload.append(`input${i + 2}_country_of_birth`, values.travel_members[i].country_of_birth.toUpperCase())
-      payload.append(`input${i + 2}_nationality`, values.travel_members[i].nationality.toUpperCase())
-      payload.append(`input${i + 2}_date_of_birth`, values.travel_members[i].date_of_birth.toUpperCase())
-      payload.append(`input${i + 2}_document_type`, values.travel_members[i].document_type.toUpperCase())
-      payload.append(`input${i + 2}_immigration_status`, values.travel_members[i].immigration_status.toUpperCase())
-      payload.append(`input${i + 2}_expiration_date`, values.travel_members[i].expiration_date.toUpperCase())
-      payload.append(`input${i + 2}_passport_upload`, values.travel_members[i].passport_upload)
+      body.append(`input${i + 2}_passport_id`, values.travel_members[i].passport_id?.toUpperCase())
+      body.append(`input${i + 2}_number_of_visits`, values.travel_members[i].number_of_visits)
+      body.append(`input${i + 2}_mobile`, values.travel_members[i].mobile)
+      body.append(`input${i + 2}_email_address`, values.travel_members[i].email_address?.toUpperCase())
+      body.append(`input${i + 2}_first_name`, values.travel_members[i].first_name?.toUpperCase()) 
+      body.append(`input${i + 2}_middle_name`, values.travel_members[i].middle_name?.toUpperCase())
+      body.append(`input${i + 2}_last_name`, values.travel_members[i].last_name?.toUpperCase())
+      body.append(`input${i + 2}_gender`, values.travel_members[i].gender?.toUpperCase())
+      body.append(`input${i + 2}_country_of_birth`, values.travel_members[i].country_of_birth?.toUpperCase())
+      body.append(`input${i + 2}_nationality`, values.travel_members[i].nationality?.toUpperCase())
+      body.append(`input${i + 2}_date_of_birth`, values.travel_members[i].date_of_birth?.toUpperCase())
+      body.append(`input${i + 2}_document_type`, values.travel_members[i].document_type?.toUpperCase())
+      body.append(`input${i + 2}_immigration_status`, values.travel_members[i].immigration_status?.toUpperCase())
+      body.append(`input${i + 2}_expiration_date`, values.travel_members[i].expiration_date?.toUpperCase())
+      body.append(`input${i + 2}_passport_upload`, values.travel_members[i].passport_upload)
     }
 
-    delete payload.travel_members
+    delete body.travel_members
+
+    const res = await fetch('/add_record.php', {
+      body,
+      method: 'POST',
+    })
+
+    if (res.ok) {
+      const html = await res.text()
+      console.log(html)
+
+      await Swal.fire({
+        title: 'Thank You',
+        confirmButtonText: 'Close',
+        customClass: 'thank-you-popup',
+        html: `
+          <div class='flex flex-col items-center mb-4 print:hidden'>
+            <p class='mb-4'>
+              Your information has been successfully submitted.
+              <br />
+              Please see below your Application ID, which you will have to present
+              to an Immigration Officer upon arrival in The Bahamas.
+            </p>
+            <button class='btn btn-primary' onclick='window.print()'>
+              Print For Your Records
+            </button>
+          </div>
+          ${html}
+        `,
+      })
+    }
   }
 
   return (
-    <ValidatedForm fields={fields} onSubmit={submit}>
+    <ValidatedForm
+      fields={fields}
+      onSubmit={submit}
+      defaults={defaults}
+      handleFormData={false}
+    >
       <footer>
         <button name='submit' type='submit'>Submit</button>
       </footer>
