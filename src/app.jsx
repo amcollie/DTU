@@ -4,81 +4,18 @@ import ValidatedForm from '@components/form'
 import ARRIVAL_PORTS from '@data/ports-of-arrival'
 import COUNTRIES from '@data/countries'
 
+const countries = COUNTRIES.map(c => c.name)
+
 const notTravellingForWork = f => f.input_trip_purpose != 'Employment'
 
 const ImmigrationForm = () => {
   const fields = [
-    '::Flight Details',
-    [
-      {
-        name: 'input_airline_name',
-        label: 'Airline',
-        options: [
-          'Bahamasair',
-          'Jet Blue',
-          'American Airlines',
-          'Silver Airways',
-          'British Airways',
-        ],
-      },
-      'input_flight_number:Flight Number',
-      {
-        name: 'input_country_of_embarcation',
-        label: 'Port of Embarkation',
-        options: [
-          'JFK - New York Airport',
-          'MIA - Miami Airport',
-          'FLL - Hollywood Airport',
-        ]
-      },
-      {
-        name: 'input_port_of_embarcation',
-        label: 'Country of Embarkation',
-        options: COUNTRIES
-      },
-      {
-        name: 'input_date_of_arrival',
-        label: 'Intended Date of Arrival',
-        as: 'date',
-      },
-      {
-        name: 'input_date_of_departure',
-        label: 'Intended Date of Departure',
-        as: 'date',
-      },
-    ],
-
-    '::Address Details',
-    {
-      name: 'input_address',
-      label: 'Address Line 1',
-    },
-    {
-      name: 'input_address_cont',
-      label: 'Address Line #2 (Optional)',
-      required: false,
-    },
-    [
-      {
-        name: 'input_city_town',
-        label: 'City',
-      },
-      {
-        name: 'input_state_province',
-        label: 'State/Province',
-      },
-      {
-        name: 'input_zip_postal_code',
-        label: 'Zip Code',
-        hint: 'If you do not have one, use 00000',
-      }
-    ],
     '::Personal Details',
     'i::Please make sure that your name matches what is in your passport',
     [
       'input_first_name:First Name',
-      'input_middle_name:Middle Name:optional',
-      'input_last_name:Last Name',
+      'input_middle_name:Middle Name(s):optional',
+      'input_last_name:Surname',
     ],
     [
       {
@@ -88,28 +25,20 @@ const ImmigrationForm = () => {
       },
       {
         name: 'input_gender',
-        label: 'Gender',
+        label: 'Sex',
         options: ['Male', 'Female']
       },
       {
         name: 'input_country_of_birth',
         label: 'Country of Birth',
-        options: COUNTRIES,
+        options: countries,
       },
       {
         name: 'input_nationality',
         label: 'Nationality',
-        options: COUNTRIES,
+        options: countries,
       }
     ],
-    {
-      name: 'input_number_of_visits',
-      label: 'How many times have you visited The Bahamas in the last 6 months?',
-      type: 'number',
-      attributes: {
-        min: 0,
-      }
-    },
 
     '::Contact Details',
     {
@@ -120,12 +49,12 @@ const ImmigrationForm = () => {
     [
       {
         name: 'input_mobile',
-        label: 'Mobile Phone #',
+        label: 'Primary Contact Number',
         as: 'tel',
       },
       {
         name: 'input_home',
-        label: 'Home Phone #',
+        label: 'Alternate Contact Number',
         as: 'tel',
       },
     ],
@@ -153,27 +82,136 @@ const ImmigrationForm = () => {
       }
     },
 
-    '::Where Will You Stay?',
+    '::Home Addres',
+    {
+      name: 'input_address',
+      label: 'Address Line 1',
+    },
+    {
+      name: 'input_address_cont',
+      label: 'Address Line #2 (Optional)',
+      required: false,
+    },
     [
       {
-        name: 'input_trip_purpose',
-        label: 'Reason For Visiting',
+        name: 'input_city_town',
+        label: 'City',
+      },
+      {
+        name: 'input_state_province',
+        label: 'State/Province',
+      },
+      {
+        name: 'input_country',
+        label: 'Country',
+        options: countries,
+      },
+      {
+        name: 'input_zip_postal_code',
+        label: 'Zip Code',
+        hint: 'If you do not have one, use 00000',
+      }
+    ],
+
+    '::Travel Information',
+    {
+      name: 'input_number_of_visits',
+      label: 'How many times have you visited The Bahamas in the last 6 months?',
+      type: 'number',
+      attributes: {
+        min: 0,
+      }
+    },
+    {
+      name: 'input_trip_purpose',
+      label: 'Reason For Visiting',
+      options: [
+        'Boating',
+        'Business',
+        'Casino',
+        'Conference',
+        'Diving',
+        'Fishing',
+        'Employment',
+        'Honeymoon',
+        'Private Flying',
+        'Vacation',
+        'Visiting Friends And Relatives',
+        'Wedding',
+        'Other',
+      ]
+    },
+    [
+      {
+        name: 'input_arrival_port',
+        label: 'Port of Arrival',
         options: [
-          'Boating',
-          'Business',
-          'Casino',
-          'Conference',
-          'Diving',
-          'Fishing',
-          'Employment',
-          'Honeymoon',
-          'Private Flying',
-          'Vacation',
-          'Visiting Friends And Relatives',
-          'Wedding',
-          'Other',
+          `NAS - Lynden Pindling Int'l Airport`,
+          `FPO - Freeport Int'l Airport`,
+        ],
+      },
+      {
+        name: 'input_mode_of_travel',
+        label: 'Mode of Travel',
+        options: ['Air', 'Sea'],
+        default: 'Air',
+      },
+      {
+        name: 'input_airline_name',
+        label: 'Airline',
+        options: [
+          'Bahamasair',
+          'Jet Blue',
+          'American Airlines',
+          'Silver Airways',
+          'British Airways',
+        ],
+        hide: f => f.mode_of_travel == 'Sea'
+      },
+      {
+        name: 'input_flight_number',
+        label: 'Flight Number',
+        hide: f => f.mode_of_travel == 'Sea'
+      },
+      {
+        name: 'input_vessel_name',
+        label: 'Vessel Name',
+        hide: f => f.mode_of_travel == 'Air'
+      },
+      {
+        name: 'input_vessel_number',
+        label: 'Vessel Number',
+        hide: f => f.mode_of_travel == 'Air'
+      },
+      's::',
+      {
+        name: 'input_country_of_embarcation',
+        label: 'Country of Embarkation',
+        options: countries,
+      },
+      {
+        name: 'input_port_of_embarcation',
+        label: 'Port of Embarkation',
+        options: [
+          'JFK - New York Airport',
+          'MIA - Miami Airport',
+          'FLL - Hollywood Airport',
         ]
       },
+      {
+        name: 'input_date_of_arrival',
+        label: 'Intended Date of Arrival',
+        as: 'date',
+      },
+      {
+        name: 'input_date_of_departure',
+        label: 'Intended Date of Departure',
+        as: 'date',
+      },
+    ],
+
+    '::Accomodations',
+    [
       {
         name: 'input_type_of_accomodation',
         label: 'Type of Accomodation',
@@ -182,7 +220,7 @@ const ImmigrationForm = () => {
             label: 'Resort/Hotel',
             value: 'Hotel'
           },
-          'Rented Aptartment/Villa',
+          'Rented Apartment/Villa',
           'Own Property',
           'Time Share',
           'Friends/Relatives',
@@ -190,11 +228,18 @@ const ImmigrationForm = () => {
         ]
       },
     ],
-    {
-      name: 'input_hotel_name',
-      label: 'Hotel Name',
-      hide: values => values.input_type_of_accomodation != 'Hotel'
-    },
+    [
+      {
+        name: 'input_hotel_name',
+        label: 'Hotel Name',
+        hide: values => values.input_type_of_accomodation != 'Hotel'
+      },
+      {
+        name: 'input_hotel_city',
+        label: 'Hotel City',
+        hide: values => values.input_type_of_accomodation != 'Hotel'
+      },
+    ],
     [
       {
         name: 'input_local_island',
@@ -214,7 +259,6 @@ const ImmigrationForm = () => {
       label: 'Street Address',
       hide: values => values.input_type_of_accomodation == 'Hotel'
     },
-
     {
       heading: 'Sponsor Details',
       hide: notTravellingForWork
@@ -239,13 +283,30 @@ const ImmigrationForm = () => {
     ],
 
     '::Emergency Contact',
-    'i::This information will only be in case of an extenuating eemrgency',
+    'i::This information will only be in case of an extenuating emergency, and is entirely optional',
+    {
+      name: 'has_emergency_contact',
+      as: 'switch',
+      label: 'I have an emergency contact',
+    },
     [
-      'input_emergency_contact_firstname:First Name',
-      'input_emergency_contact_lastname:Last Name',
+      {
+        name: 'input_emergency_contact_firstname',
+        hide: values => !values.has_emergency_contact,
+        label: 'First Name',
+        required: false,
+      },
+      {
+        name: 'input_emergency_contact_lastname',
+        hide: values => !values.has_emergency_contact,
+        label: 'Last Name',
+        required: false,
+      },
       {
         name: 'input_emergency_contact_relationship',
+        hide: values => !values.has_emergency_contact,
         label: 'Relationship',
+        required: false,
         options: [
           'Spouse / Significant Other',
           'Parent',
@@ -257,11 +318,17 @@ const ImmigrationForm = () => {
       },
       {
         name: 'input_emergency_contact_phone',
+        hide: values => !values.has_emergency_contact,
         label: 'Contact Phone #',
+        required: false,
         as: 'tel',
       }
     ],
-
+    '::Travel Members',
+    `
+      i::If you are travelling with family members that live in the same
+      household as you, you may enter up to 3 additional persons below.
+    `,
     {
       name: 'additional_members',
       as: 'switch',
@@ -294,18 +361,18 @@ const ImmigrationForm = () => {
           },
           {
             name: 'sex',
-            label: 'Gender',
+            label: 'Sex',
             options: ['Male', 'Female']
           },
           {
             name: 'country_of_birth',
             label: 'Country of Birth',
-            options: COUNTRIES,
+            options: countries,
           },
           {
             name: 'nationality',
             label: 'Nationality',
-            options: COUNTRIES,
+            options: countries,
           }
         ],
         [
@@ -331,9 +398,37 @@ const ImmigrationForm = () => {
     }
   ]
 
-  const submit = async (form, values) => {
-    const familySize = 1 + values.travellers.length
+  const submit = async values => {
+    const payload = Object.entries({
+      ...values,
+      input_passenger_reg_amount: 1 + (values.travellers?.length ?? 0),
+      input_local_city: `${values.input_local_island} - ${values.input_local_city}`
+    }).reduce((form, [k, v]) => {
+      if (Array.isArray(v)) return form
+      form.append(k, typeof v == 'string' ? v.toUpperCase() : v)
+      return form
+    }, new FormData())
 
+    const { length } = values.travel_members
+    for (let i = 0; i < length; i++) {
+      payload.append(`input${i + 2}_passport_id`, values.travel_members[i].passport_id.toUpperCase())
+      payload.append(`input${i + 2}_number_of_visits`, values.travel_members[i].number_of_visits)
+      payload.append(`input${i + 2}_mobile`, values.travel_members[i].mobile)
+      payload.append(`input${i + 2}_email_address`, values.travel_members[i].email_address.toUpperCase())
+      payload.append(`input${i + 2}_first_name`, values.travel_members[i].first_name.toUpperCase()) 
+      payload.append(`input${i + 2}_middle_name`, values.travel_members[i].middle_name.toUpperCase())
+      payload.append(`input${i + 2}_last_name`, values.travel_members[i].last_name.toUpperCase())
+      payload.append(`input${i + 2}_gender`, values.travel_members[i].gender.toUpperCase())
+      payload.append(`input${i + 2}_country_of_birth`, values.travel_members[i].country_of_birth.toUpperCase())
+      payload.append(`input${i + 2}_nationality`, values.travel_members[i].nationality.toUpperCase())
+      payload.append(`input${i + 2}_date_of_birth`, values.travel_members[i].date_of_birth.toUpperCase())
+      payload.append(`input${i + 2}_document_type`, values.travel_members[i].document_type.toUpperCase())
+      payload.append(`input${i + 2}_immigration_status`, values.travel_members[i].immigration_status.toUpperCase())
+      payload.append(`input${i + 2}_expiration_date`, values.travel_members[i].expiration_date.toUpperCase())
+      payload.append(`input${i + 2}_passport_upload`, values.travel_members[i].passport_upload)
+    }
+
+    delete payload.travel_members
   }
 
   return (
