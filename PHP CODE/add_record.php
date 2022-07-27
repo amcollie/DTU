@@ -3,6 +3,7 @@
 
 include 'dbconnection.php';
 require('upload.php');
+require('barcode.php');
 
 //Code to generate the record ids for resume/recover events.
 // This function will return
@@ -143,8 +144,10 @@ if($_POST)
     $input4_passport_upload     = $passport_path;
 
     // Insertion of passenger profile
+
     $conn = OpenCon();
-    if (!$conn->query(
+
+    if ($conn->query(
         "CALL INSERT_PROFILE_PASSENGER(
             '$input_passenger_reg_amount',
             '$input_passenger_record_id',
@@ -254,13 +257,12 @@ if($_POST)
             '$input4_expiration_date',
             '$input4_passport_upload'
         )"
-    ))
-    {
-	CloseCon();
-        echo "CALL failed : (" .$conn->errno .")" .$conn->error;
+    )) {
+        GenerateImageCode($input_passenger_record_id);
     } else {
-	CloseCon();
-        header('Location: index.php?record_id=' . $input_passenger_record_id);
+        echo "CALL failed : (" .$conn->errno .")" .$conn->error;
     }
+    
+    CloseCon();
 }
 ?>
