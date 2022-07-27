@@ -22,10 +22,11 @@ function GenerateImageCode($record_id) {
     
     $qrcode = (new QRCode($options))->render($record_id);
 
-    echo "<div style= 'max-width: 400px; text-align: center; box-shadow: 5px 10px #cccccc; padding: 8px;'>
-            <h1> $record_id </h1>
-            <div style='margin: auto; width: 50%;'> $qrcode </div><br>
-            <div style='display: flex; justify-content: center;'> $barcode </div>
+    echo "<div style='text-align: center; box-shadow: 5px 10px #cccccc; padding: 8px;'>
+            <h1 style='color: black;'> $record_id </h1>
+            <div style='margin: auto; width: 50%;'> $qrcode </div>
+            <br>
+            <div style='background: white; display: flex; justify-content: center;'> $barcode </div>
             <br>
         </div>";
 }
