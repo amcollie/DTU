@@ -257,7 +257,7 @@ if($_POST)
     ))
     {
 	CloseCon();
-        echo "CALL failed : (" .$mysqli->errno .")" .$mysqli->error;
+        echo "CALL failed : (" .$conn->errno .")" .$conn->error;
     } else {
 	CloseCon();
         header('Location: index.php?record_id=' . $input_passenger_record_id);
