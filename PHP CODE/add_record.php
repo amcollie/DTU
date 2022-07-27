@@ -2,7 +2,7 @@
 <?php
 
 include 'dbconnection.php';
-require('uploads.php');
+require('upload.php');
 
 // Connect to db.   
 
