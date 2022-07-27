@@ -48,12 +48,12 @@ const markup = (props, meta, label, input) => {
 
 const Note = ({ type, message }) => (
   <aside key={message} className={`note ${type}`}>
-    {createElement(icons[type], { size: 18 })}
+    <div>{createElement(icons[type], { size: 18 })}</div>
     <span>{message}</span>
   </aside>
 )
 
-export const Spacer = () => <Note type='info' message='' />
+export const Spacer = () => <br />
 export const Info = ({ info }) => <Note type='info' message={info} />
 export const Warning = ({ warning }) => <Note type='warning' message={warning} />
 
@@ -83,6 +83,54 @@ export function Input ({ label, attributes, ...props }) {
 
   return markup(props, meta, label, (
     <input {...field} {...attrs} />
+  ))
+}
+
+export function IntlPhone ({ label, ...props }) {
+  const [field, meta, helpers] = useField(props)
+  return null
+}
+
+export function Password ({ label, attributes, ...props }) {
+  const [field, meta] = useField(props)
+  const [show, setShow] = useState(false)
+
+  return markup(props, meta, label, (
+    <Fragment>
+      <input
+        type={show ? 'text' : 'password'}
+        {...field}
+        {...attributes}
+      />
+      {
+        createElement(show ? FaEyeSlash : FaEye, {
+          size: 20,
+          className: 'absolute right-3 top-10',
+          onClick: () => setShow(!show),
+        })
+      }
+    </Fragment>
+  ))
+}
+
+export function Select ({ label, attributes, options, ...props }) {
+  const [field, meta] = useField(props)
+  const { values } = useFormikContext()
+  const opts = getOptions(options, values)
+
+  if (typeof opts == 'string') {
+    return markup(props, meta, label, (
+      <select {...field} {...attributes} disabled>
+        <option value=''>{opts}</option>
+      </select>
+    ))
+  }
+
+  return markup(props, meta, label, (
+    <select {...field} {...attributes}>
+      <option value=''>(Please select an option)</option>
+      {opts}
+    </select>
   ))
 }
 
@@ -186,49 +234,6 @@ export function File ({ label, attributes, accept, ...props }) {
       />
       {content}
     </div>
-  ))
-}
-
-export function Password ({ label, attributes, ...props }) {
-  const [field, meta] = useField(props)
-  const [show, setShow] = useState(false)
-
-  return markup(props, meta, label, (
-    <Fragment>
-      <input
-        type={show ? 'text' : 'password'}
-        {...field}
-        {...attributes}
-      />
-      {
-        createElement(show ? FaEyeSlash : FaEye, {
-          size: 20,
-          className: 'absolute right-3 top-10',
-          onClick: () => setShow(!show),
-        })
-      }
-    </Fragment>
-  ))
-}
-
-export function Select ({ label, attributes, options, ...props }) {
-  const [field, meta] = useField(props)
-  const { values } = useFormikContext()
-  const opts = getOptions(options, values)
-
-  if (typeof opts == 'string') {
-    return markup(props, meta, label, (
-      <select {...field} {...attributes} disabled>
-        <option value=''>{opts}</option>
-      </select>
-    ))
-  }
-
-  return markup(props, meta, label, (
-    <select {...field} {...attributes}>
-      <option value=''>(Please select an option)</option>
-      {opts}
-    </select>
   ))
 }
 

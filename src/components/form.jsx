@@ -156,6 +156,8 @@ function getFields (fields = [], values = {}, parent, index) {
       return <Fields.Select {...f} key={f.name} />
 
     switch (f.as) {
+      case 'tel:intl':
+        return <Fields.IntlPhone {...f} key={f.name} />
       case 'textarea':
         return <Fields.Textarea {...f} key={f.name} />
       case 'password':

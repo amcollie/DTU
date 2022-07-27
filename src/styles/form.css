@@ -23,7 +23,7 @@
     @apply rounded flex items-center p-2 space-x-2 border-l-8 mb-3;
 
     svg {
-      @apply mt-0.5;
+      @apply relative top-1;
     }
 
     &.info {
