@@ -59,7 +59,7 @@ function ValidatedForm ({ fields, onSubmit, ...props }) {
       if (!isConfirmed) return
     }
 
-    if (props.handleFormData !== false && nf.some(f => /^file/.test(f.as))) {
+    if (props.handleFormData !== false && nf.some(f => /^file/.test(f.as) && !f.hide?.(values, formik))) {
       const form = new FormData()
 
       for (let [k, v] of Object.entries(values)) {
@@ -75,7 +75,7 @@ function ValidatedForm ({ fields, onSubmit, ...props }) {
       return
     }
 
-    const res = await onSubmit(values, formik)
+    const res = await onSubmit(values, formik, values)
     if (props.handleMessages !== false) {
       if (typeof res == 'string') setMessage(res)
       else setMessage('')

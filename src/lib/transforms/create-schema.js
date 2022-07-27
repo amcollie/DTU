@@ -12,10 +12,11 @@ const transform = (fields = []) => {
       return schema
     }
 
-    const { name, label, type, validators, required } = f
+    const { name, label, type, hide, validators, required } = f
 
     if (
       f.heading
+      || hide
       || f.info
       || f.warning
       || f.spacer
