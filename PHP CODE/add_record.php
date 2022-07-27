@@ -4,8 +4,6 @@
 include 'dbconnection.php';
 require('upload.php');
 
-// Connect to db.   
-
 //Code to generate the record ids for resume/recover events.
 // This function will return
 // A random string of specified length
@@ -21,10 +19,9 @@ function random_strings($length_of_string) {
 // If the form was submitted.
 if($_POST)
 {
-
     // Retrieve data from form. 
     $input_passenger_reg_amount = $_POST ['input_passenger_reg_amount'];
-    $input_passenger_record_id  = $_POST [random_strings(15)];
+    $input_passenger_record_id  = random_strings(15);
 
     // Passenger address information
     $input_country          = $_POST ['input_country'];
@@ -146,7 +143,8 @@ if($_POST)
     $input4_passport_upload     = $passport_path;
 
     // Insertion of passenger profile
-    if (!$mysqli->query(
+    $conn = OpenCon();
+    if (!$conn->query(
         "CALL INSERT_PROFILE_PASSENGER(
             '$input_passenger_reg_amount',
             '$input_passenger_record_id',
@@ -258,14 +256,11 @@ if($_POST)
         )"
     ))
     {
-        echo "CALL failed : (" .$mysqli->errno .")" .$mysqli->error;
+	CloseCon();
+        echo "CALL failed : (" .$conn->errno .")" .$conn->error;
     } else {
+	CloseCon();
         header('Location: index.php?record_id=' . $input_passenger_record_id);
-    }
-
-    if(!$res = $mysqli->query("SELECT * FROM main"))
-    {
-        echo "SELECT failed : (" .$mysqli->errno .")" .$mysqli->error;
     }
 }
 ?>
