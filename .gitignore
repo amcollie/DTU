@@ -1,3 +1,9 @@
+# Local Server
+.server
+
+# Composer build files
+PHP CODE/vendor
+
 # Logs
 logs
 *.log
