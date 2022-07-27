@@ -11,10 +11,12 @@ const isAllowedType = str => {
   return null
 }
 
-const normalize = f => {
-  if (Array.isArray(f)) return f.map(normalize)
+const normalize = field => {
+  if (Array.isArray(field)) return field.map(normalize)
 
-  if (typeof f == 'string') {
+  if (typeof field == 'string') {
+    const f = field.trim()
+
     if (f.startsWith('::')) {
       return { heading: f.slice(2) }
     } else if (f.startsWith('i::')) {
@@ -34,24 +36,24 @@ const normalize = f => {
       }
     }
 
-    return { ...base, name: f, label: f.initialCaps() }
+    return { ...base, name: field, label: field.initialCaps() }
   }
 
-  const final = { ...base, ...f }
+  const final = { ...base, ...field }
 
-  if (f.heading == 'SPACER') {
+  if (field.heading == 'SPACER') {
     final.heading = '<span>&nbsp;</span>'
   }
 
-  if (f.as == 'switch' || f.as == 'checkbox') {
+  if (field.as == 'switch' || field.as == 'checkbox') {
     final.type = 'checkbox'
   }
 
-  if (f.as == 'switch') {
-    final.required = !!f.required || false
+  if (field.as == 'switch') {
+    final.required = !!field.required || false
   }
 
-  final.label = final.label ?? f.name?.initialCaps()
+  final.label = final.label ?? field.name?.initialCaps()
   return final
 }
 

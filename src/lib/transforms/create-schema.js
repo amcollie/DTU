@@ -18,6 +18,7 @@ const transform = (fields = []) => {
       f.heading
       || f.info
       || f.warning
+      || f.spacer
       || (type && type != 'checkbox' && !yup[type])
     ) return schema
 
