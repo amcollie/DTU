@@ -40,7 +40,7 @@ const transform = (fields = []) => {
       if (rule == 'when') {
         handleRequireRule = false
         const [dependence, config, value] = params
-        const noop = yup[type]().notRequired()
+        const noop = yup[type]().nullable().notRequired()
 
         let sub = (type == 'checkbox' ? yup.bool : yup[type ?? 'string'])()
           .label(label)
