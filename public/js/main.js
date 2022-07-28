@@ -19,7 +19,7 @@
 /* 1. Loading / Opening ................ */
 /* ------------------------------------- */
 
-$(window).load(function(){
+$(function() {
     "use strict";
 
     setTimeout(function(){
