@@ -35,7 +35,7 @@ $(function() {
             }
         })
 
-    },1000);
+    },300);
 
     setTimeout(function(){
         $('.global-overlay').velocity({
@@ -46,13 +46,13 @@ $(function() {
         },
 
         {
-            duration: 1000,
+            duration: 300,
             easing: [0.7,0,0.3,1],
         })
         
         $(".map-container").addClass("fadeInRight").removeClass('opacity-0');
 
-    },1000);
+    },300);
 
     setTimeout(function(){
         $('#left-side').velocity({
@@ -75,11 +75,11 @@ $(function() {
         },
 
         {
-            duration: 1000,
+            duration: 300,
             easing: [0.7,0,0.3,1],
         })
         
-    },1600);
+    },500);
 
 })
 
