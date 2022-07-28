@@ -8,47 +8,86 @@ const transform = (fields = []) => {
 
   const schema = fields.reduce((schema, f) => {
     if (Array.isArray(f)) {
-      Object.assign(schema, transform(f))
-      return schema
+      return Object.assign(schema, transform(f))
     }
 
-    const { name, label, type, hide, validators, required } = f
+    let handleRequireRule = true
+    const { name, label, type, validators, required } = f
 
     if (
       f.heading
-      || hide
       || f.info
       || f.warning
       || f.spacer
       || (type && type != 'checkbox' && !yup[type])
     ) return schema
 
-    const initial = (type == 'checkbox' ? yup.bool : yup[type ?? 'string'])()
+    let field = (type == 'checkbox' ? yup.bool : yup[type ?? 'string'])()
       .label(label)
 
-    const final = validators.reduce((comp, v) => {
-      const [type, ...params] = Array.isArray(v) ? v : v.split(':')
-      if (!comp[type]) return comp
-      return comp[type](...params)
-    }, initial)
-
     if (type == 'array') {
+      const { min, max } = f
       const sub = transform(normalize(f.fields))
-      schema[name] = final.of(yup.object(sub))
+
+      field = field.of(yup.object(sub))
+      if (min) field = field.min(min)
+      if (max) field = field.max(max)
     }
 
-    if (name.includes('.')) {
-      setPath(nested, name, final)
-      return schema
-    }
-    
-    schema[name] = final
+    field = validators.reduce((rules, v) => {
+      const [rule, ...params] = Array.isArray(v) ? v : v.split(':')
 
-    if (required !== false) {
-      schema[name] = schema[name].required('Required')
+      if (rule == 'when') {
+        handleRequireRule = false
+        const [dependence, config, value] = params
+        const noop = yup[type]().notRequired()
+
+        let sub = (type == 'checkbox' ? yup.bool : yup[type ?? 'string'])()
+          .label(label)
+
+        sub = required === false
+          ? sub.nullable().notRequired()
+          : sub.nullable().required('Required')
+
+        switch (config) {
+          case 'is-true':
+            return rules.when(dependence, {
+              is: val => !!val,
+              then: sub,
+              otherwise: noop,
+            })
+          case 'is-false':
+            return rules.when(dependence, {
+              is: val => !val,
+              then: sub,
+              otherwise: noop,
+            })
+          case 'is':
+            return rules.when(dependence, {
+              is: val => val == value,
+              then: sub,
+              otherwise: noop,
+            })
+          case 'is-not':
+            return rules.when(dependence, {
+              is: val => val != value,
+              then: sub,
+              otherwise: noop,
+            })
+          default:
+            return rules.when(dependence, config)
+        }
+      }
+
+      if (!rules[rule]) return rules
+      return rules[rule](...params)
+    }, field)
+
+    if (handleRequireRule) {
+      field = required === false ? field : field.required('Required')
     }
 
-    return schema
+    return Object.assign(schema, { [name]: field })
   }, {})
 
   for (let [key, shape] of Object.entries(nested)) {
