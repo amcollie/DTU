@@ -7,6 +7,7 @@ import LanguagePicker from '@components/language-select'
 import '@styles/globals.css'
 import '@utils/string-extensions'
 import 'react-intl-tel-input/dist/main.css'
+import 'flag-icons'
 
 ReactDOM.createRoot(document.getElementById('reactroot')).render(
   <React.StrictMode>
