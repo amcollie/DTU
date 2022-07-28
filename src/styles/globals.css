@@ -23,6 +23,23 @@
   }
 }
 
+.language-picker {
+  @apply flex flex-col space-y-5 clear-both mt-12 p-4 w-full
+    bg-gray-700 bg-opacity-40;
+
+  select {
+    @apply p-2 bg-gray-900 bg-opacity-50 text-gray-200 border-none;
+  }
+
+  @screen sm {
+    @apply w-80 mx-auto;
+  }
+
+  @screen md {
+    @apply mx-0;
+  }
+}
+
 [data-hide]:not([data-hide='false']) {
   @apply hidden
 }
