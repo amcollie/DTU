@@ -169,7 +169,7 @@ if($_POST)
             '$input_vessel_name',
             '$input_vessel_number',
             '$input_date_of_arrival',
-            '$input_date_of_departure,
+            '$input_date_of_departure',
             '$input_emergency_contact_firstname',
             '$input_emergency_contact_lastname',
             '$input_emergency_contact_relationship',
