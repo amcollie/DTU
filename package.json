@@ -12,14 +12,17 @@
   "dependencies": {
     "flag-icons": "^6.6.4",
     "formik": "^2.2.9",
+    "jsbarcode": "^3.11.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.2",
+    "react-google-recaptcha": "^2.1.0",
     "react-icons": "^4.4.0",
     "react-intl-tel-input": "^8.2.0",
     "react-select": "^5.4.0",
     "set-value": "^4.1.0",
     "sweetalert2": "^11.4.23",
+    "sweetalert2-react-content": "^5.0.2",
     "yup": "^0.32.11"
   },
   "devDependencies": {
