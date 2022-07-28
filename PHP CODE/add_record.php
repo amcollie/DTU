@@ -18,7 +18,7 @@ function random_strings($length_of_string) {
 //echo random_strings(15);
 
 // If the form was submitted.
-if($_POST)
+if ($_POST)
 {
     // Retrieve data from form. 
     $input_passenger_reg_amount = $_POST ['input_passenger_reg_amount'];
