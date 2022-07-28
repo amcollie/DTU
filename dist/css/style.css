@@ -646,7 +646,7 @@ sup {
 #right-side {
   background: #f2f3f7;
   position: relative;
-  overflow: auto;
+  overflow-x: hidden;
   -webkit-transform: translate3d(100%, 0, 0);
   -moz-transform: translate3d(100%, 0, 0);
   -o-transform: translate3d(100%, 0, 0);
@@ -1439,7 +1439,7 @@ sup {
 /* ------------------------------------- */
 .social-icons {
   position: absolute;
-  left: 10%;
+  left: 150px;
   bottom: 5%;
   margin-left: -22px;
   margin-bottom: -22px;
@@ -1605,7 +1605,7 @@ footer p {
 #player-nav {
   position: fixed;
   right: 20px;
-  bottom: 90px;
+  bottom: 20px;
   text-align: center;
 }
 #player-nav li {

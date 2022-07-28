@@ -19,7 +19,7 @@
 /* 1. Loading / Opening ................ */
 /* ------------------------------------- */
 
-$(window).load(function(){
+$(function() {
     "use strict";
 
     setTimeout(function(){
@@ -35,7 +35,7 @@ $(window).load(function(){
             }
         })
 
-    },1000);
+    }, 300);
 
     setTimeout(function(){
         $('.global-overlay').velocity({
