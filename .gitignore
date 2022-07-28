@@ -1,6 +1,9 @@
 # Local Server
 .server
 
+# .env file
+.env
+
 # Composer build files
 PHP CODE/vendor
 
