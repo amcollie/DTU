@@ -121,7 +121,7 @@ if($_POST)
     $input3_expiration_date     = $_POST ['input3_expiration_date'];
 
     $passport_path = upload_photo($input3_passport_id, $_POST['input3_passport_upload']);
-    $input3_passport_upload     = $_POST ['input3_passport_upload'];
+    $input3_passport_upload     = $passport_path;
 
     // Passenger four information
     $input4_passport_id         = $_POST ['input4_passport_id'];
