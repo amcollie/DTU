@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useRef, useState } from 'react'
 import { Formik, Form, FieldArray } from 'formik'
 import { FaMinus, FaPlusCircle } from 'react-icons/fa'
 import Swal from 'sweetalert2'
@@ -8,11 +8,13 @@ import * as Fields from './fields'
 import fallback from '@lib/utils/fallback'
 import getSchema from '@lib/transforms/create-schema'
 import normalizeField from '@lib/transforms/normalize-field'
+import ReCAPTCHA from 'react-google-recaptcha'
 
 function ValidatedForm ({ fields, onSubmit, ...props }) {
   const [message, setMessage] = useState('')
   const [id] = useState('__validated-form__')
   const nf = fields.map(normalizeField)
+  const captcha = useRef()
 
   let classes = 'validated-form '
 
@@ -39,6 +41,13 @@ function ValidatedForm ({ fields, onSubmit, ...props }) {
     return (
       <Form id={id} onSubmit={f.handleSubmit} className={classes}>
         {getFields(nf, f.values)}
+        {props.handleCaptcha === false ? null : (
+          <ReCAPTCHA
+            ref={captcha}
+            size='invisible'
+            sitekey={import.meta.env.VITE_APP_CAPTCHA_KEY}
+          />
+        )}
         {footer}
       </Form>
     )
@@ -46,6 +55,12 @@ function ValidatedForm ({ fields, onSubmit, ...props }) {
 
   const handleSubmission = async (values, formik) => {
     if (formik.isSubmitting) return
+    let __token
+
+    if (props.handleCaptcha !== false) {
+      __token = await captcha.current.executeAsync()
+      Object.assign(values, { __token })
+    }
 
     if (props.handleConfirmation !== false) {
       const { isConfirmed } = await Swal.fire({
@@ -59,7 +74,10 @@ function ValidatedForm ({ fields, onSubmit, ...props }) {
       if (!isConfirmed) return
     }
 
-    if (props.handleFormData !== false && nf.some(f => /^file/.test(f.as) && !f.hide?.(values, formik))) {
+    if (
+      props.handleFormData !== false
+      && nf.some(f => /^file/.test(f.as))
+    ) {
       const form = new FormData()
 
       for (let [k, v] of Object.entries(values)) {
@@ -114,6 +132,9 @@ function getInitialValues (fields = [], defaults) {
       const initial = getInitialValues(f.fields)
       setPath(defs, f.name, Array(f.min).fill(initial))
       return defs
+    } else if (f.as == 'switch' && f.as == 'checkbox') {
+      setPath(defs, f.name, fallback(f.default, false, false))
+      return defs
     }
 
     setPath(defs, f.name, fallback(f.default, '', false))
@@ -123,7 +144,12 @@ function getInitialValues (fields = [], defaults) {
 
 function getFields (fields = [], values = {}, parent, index) {
   return fields.map((field, i) => {
-    if (field.hide?.(values, index) || field.hide === true) return null
+    if (
+      field.show === false
+      || field.hide === true
+      || field.show?.(values, index) === false
+      || field.hide?.(values, index)
+    ) return null
 
     if (Array.isArray(field)) {
       const list = getFields(field, values, parent, index)
