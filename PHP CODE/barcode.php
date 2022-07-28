@@ -8,7 +8,7 @@ require_once __DIR__.'/vendor/autoload.php';
 // Generates and displays Barcode, and QRCode encoded with given variable $record_id
 function GenerateImageCode($record_id) {
     // Generate Barcode
-    $generator = new Picqer\Barcode\BarcodeGeneratorHTML();
+    $generator = new Picqer\Barcode\BarcodeGeneratorSVG();
     $barcode = $generator->getBarcode($record_id, $generator::TYPE_CODE_128);
 
     // Generate QRCode
