@@ -129,6 +129,8 @@ function getInitialValues (fields = [], defaults) {
     if (f.name in defs || f.heading) return defs
 
     if (f.type == 'array' && f.min) {
+      if (f.hide === true || f.hide?.(defs)) return defs
+      if (f.show === false || f.show?.(defs) === false) return defs
       const initial = getInitialValues(f.fields)
       setPath(defs, f.name, Array(f.min).fill(initial))
       return defs
