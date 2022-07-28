@@ -23,7 +23,8 @@ function GenerateImageCode($record_id) {
     $qrcode = (new QRCode($options))->render($record_id);
 
     echo "<div style='text-align: center; box-shadow: 5px 10px #cccccc; padding: 8px;'>
-            <h1 style='color: black;'> $record_id </h1>
+            <h2 style='color: black;'>Confirmation Number</h2>
+            <h3 style='color: black;'>$record_id</h3>
             <div style='margin: auto; width: 50%;'> $qrcode </div>
             <br>
             <div style='background: white; display: flex; justify-content: center;'> $barcode </div>
