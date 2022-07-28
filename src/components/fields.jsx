@@ -4,6 +4,7 @@ import { FaCheck, FaFilePdf, FaEye, FaEyeSlash } from 'react-icons/fa'
 import { AiFillCloseCircle } from 'react-icons/ai'
 import { VscWarning, VscInfo } from 'react-icons/vsc'
 import { useDropzone } from 'react-dropzone'
+import IntlTelInput from 'react-intl-tel-input'
 
 const icons = {
   info: VscInfo,
@@ -87,8 +88,24 @@ export function Input ({ label, attributes, ...props }) {
 }
 
 export function IntlPhone ({ label, ...props }) {
-  const [field, meta, helpers] = useField(props)
-  return null
+  const [, meta, helpers] = useField(props)
+
+  const onChange = (valid, number, country) => {
+    helpers.setValue(number)
+    helpers.setError(valid ? null : 'Please enter a valid phone number')
+  }
+
+  const onBlur = () => {
+    helpers.setTouched(true)
+  }
+
+  return markup(props, meta, label,(
+    <IntlTelInput
+      preferredCountries={['us', 'ca', 'gb', 'bs']}
+      onPhoneNumberBlur={onBlur}
+      onPhoneNumberChange={onChange}
+    />
+  ))
 }
 
 export function Password ({ label, attributes, ...props }) {
@@ -128,7 +145,11 @@ export function Select ({ label, attributes, options, ...props }) {
 
   return markup(props, meta, label, (
     <select {...field} {...attributes}>
-      <option value=''>(Please select an option)</option>
+      {
+        props.disableNull ? null : (
+          <option value=''>(Please select an option)</option>
+        )
+      }
       {opts}
     </select>
   ))
