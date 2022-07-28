@@ -4,6 +4,7 @@ import COUNTRIES from '@data/countries'
 
 
 const countries = COUNTRIES.map(c => c.name)
+const today = new Date().toISOString().slice(0, 10)
 
 const PERSONAL = [
   '::Personal Details',
@@ -218,11 +219,17 @@ const TRAVEL_INFO = [
       name: 'input_date_of_arrival',
       label: 'Intended Date of Arrival',
       as: 'date',
+      attributes: {
+        min: today,
+      },
     },
     {
       name: 'input_date_of_departure',
       label: 'Intended Date of Departure',
       as: 'date',
+      attributes: {
+        min: today,
+      },
     },
   ],
 ]
@@ -291,13 +298,7 @@ const SPONSOR = [
   [
     {
       name: 'input_sponsor_name',
-      label: 'First Name',
-      show: f => f.input_trip_purpose == 'Employment',
-      validators: ['when:input_trip_purpose:is:Employment']
-    },
-    {
-      name: 'input_sponsor_last_name',
-      label: 'Last Name',
+      label: 'Full Name',
       show: f => f.input_trip_purpose == 'Employment',
       validators: ['when:input_trip_purpose:is:Employment']
     },
