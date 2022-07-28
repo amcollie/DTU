@@ -22,7 +22,7 @@ if($_POST)
 {
     // Retrieve data from form. 
     $input_passenger_reg_amount = $_POST ['input_passenger_reg_amount'];
-    $input_passenger_record_id  = random_strings(15);
+    $input_passenger_record_id  = strtoupper(random_strings(15));
 
     // Passenger address information
     $input_country          = $_POST ['input_country'];
