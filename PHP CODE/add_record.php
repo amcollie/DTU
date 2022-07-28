@@ -152,15 +152,13 @@ if($_POST)
             '$input_passenger_reg_amount',
             '$input_passenger_record_id',
 
-            // Passenger address
-            '$input_country,
+            '$input_country',
             '$input_address',
             '$input_address_cont',
             '$input_city_town',
             '$input_state_province',
             '$input_zip_postal_code',
 
-            // Passenger arrival and departure information
             '$input_number_of_visits',
             '$input_arrival_port',
             '$input_mode_of_travel',
@@ -177,7 +175,6 @@ if($_POST)
             '$input_emergency_contact_relationship',
             '$input_emergency_contact_phone',
 
-            // Passenger local address information
             '$input_trip_purpose',
             '$input_type_of_accommodate',
             '$input_hotel_name',
@@ -189,7 +186,6 @@ if($_POST)
             
             '$input_passport_id',
 
-            // Passenger contact information
             '$input_mobile',
             '$input_home_phone',
             '$input_work_phone',
@@ -206,7 +202,6 @@ if($_POST)
             '$input_expiration_date',
             '$input_passport_upload',
 
-            // Passenger two information
             '$input2_passport_id', 
             '$input2_number_of_visits',
             '$input2_mobile',
@@ -223,7 +218,6 @@ if($_POST)
             '$input2_expiration_date',
             '$input2_passport_upload',
 
-            // Passenger three information
             '$input3_passport_id',
             '$input3_number_of_visits',
             '$input3_mobile',
@@ -240,7 +234,6 @@ if($_POST)
             '$input3_expiration_date',
             '$input3_passport_upload',
 
-            // Passenger four information
             '$input4_passport_id',
             '$input4_number_of_visits',
             '$input4_mobile', 
