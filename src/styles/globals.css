@@ -12,8 +12,24 @@
     @apply max-w-lg mx-auto;
   }
 
+  .swal2-html-container div ~ div > div {
+    @apply shadow-none p-0 !important;
+  }
+
   .swal2-html-container :is(h1, div, p) {
     @apply text-gray-800;
+  }
+
+  .swal2-html-container h2 {
+    @apply mb-0 mt-8;
+  }
+
+  .swal2-html-container h3 {
+    @apply mb-0;
+  }
+
+  button:last-child svg path {
+    @apply stroke-white;
   }
 
   @media print {
@@ -24,15 +40,19 @@
 }
 
 .language-picker {
-  @apply flex flex-col space-y-5 clear-both mt-12 p-4 w-full
+  @apply relative flex flex-col space-y-5 clear-both mt-12 p-4 w-full
     bg-gray-700 bg-opacity-40;
 
+  .fi {
+    @apply absolute left-7 bottom-7;
+  }
+
   select {
-    @apply p-2 bg-gray-900 bg-opacity-50 text-gray-200 border-none;
+    @apply p-2 pl-12 bg-gray-900 bg-opacity-50 text-gray-200 border-none;
   }
 
   @screen sm {
-    @apply w-80 mx-auto;
+    @apply w-60 mx-auto;
   }
 
   @screen md {

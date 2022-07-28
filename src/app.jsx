@@ -7,6 +7,7 @@ import ValidatedForm from '@components/form'
 
 import fields from '@/app.fields'
 import { FaEnvelope, FaPrint } from 'react-icons/fa'
+import { GrSend } from 'react-icons/gr'
 
 const Swal = withReact(Sweetalert)
 
@@ -26,26 +27,28 @@ const ImmigrationForm = () => {
     return () => help?.removeEventListener('click', openHelpPopup)
   })
 
-  const emailRecord = (email, id) => async () => {
+  const emailRecord = (email, id, printAfter = false) => async () => {
     const body = new FormData()
     body.append('email', email)
     body.append('record_id', id)
 
-    // const res = await fetch('/send_record_email.php', {
-    //   method: 'POST',
-    //   body
-    // })
+    const res = await fetch('/send_email.php', {
+      method: 'POST',
+      body
+    })
     
-    // if (!res.ok) {
-    //   Swal.showValidationMessage('Failed to send email')
-    //   return
-    // }
+    if (!res.ok) {
+      Swal.showValidationMessage('Failed to send email')
+      return
+    }
     
     await Swal.fire(
       'Success',
       'Email successfully sent. Please make sure to also check your spanm and junk folders',
       'success'
     )
+
+    if (printAfter) window.print()
   }
 
   const submit = async values => {
@@ -66,7 +69,7 @@ const ImmigrationForm = () => {
         body.append(`input${i + 2}_number_of_visits`, values.travel_members[i].number_of_visits)
         body.append(`input${i + 2}_mobile`, values.travel_members[i].mobile)
         body.append(`input${i + 2}_email_address`, values.travel_members[i].email_address?.toUpperCase())
-        body.append(`input${i + 2}_first_name`, values.travel_members[i].first_name?.toUpperCase()) 
+        body.append(`input${i + 2}_first_name`, values.travel_members[i].first_name?.toUpperCase())
         body.append(`input${i + 2}_middle_name`, values.travel_members[i].middle_name?.toUpperCase())
         body.append(`input${i + 2}_last_name`, values.travel_members[i].last_name?.toUpperCase())
         body.append(`input${i + 2}_gender`, values.travel_members[i].gender?.toUpperCase())
@@ -80,19 +83,28 @@ const ImmigrationForm = () => {
       }
     }
 
-    delete body.travel_members
-    console.log(...body.entries())
+    for (let [k, v] of body.entries()) {
+      console.log(k, v)
+    }
 
-    // const res = await fetch('/add_record.php', {
-    //   body,
-    //   method: 'POST',
-    // })
+    const res = await fetch('/add_record.php', {
+      body,
+      method: 'POST',
+    })
 
-    // if (res.ok) {
-    //   const html = await res.text()
-    //   console.log(html)
-      const html = SuccessText()
-      const [, rid] = html.match(/<h1>(.+)<\/h1>/)
+    if (res.ok) {
+      const html = await res.text()
+      if (/call fail/i.test(html)) {
+        await Swal.fire(
+          'Error',
+          'We were unable to submit your application',
+          'error'
+        )
+
+        return
+      }
+
+      const [, rid] = html.match(/<h3 style=['"]color:\s?black;['"]>(.+)<\/h3>/)
 
       await Swal.fire({
         icon: 'success',
@@ -117,7 +129,7 @@ const ImmigrationForm = () => {
               <div className='flex justify-center space-x-6'>
                 <button className='btn primary space-x-2' onClick={window.print}>
                   <FaPrint />
-                  <span>Print</span>
+                  <span>Save/Print</span>
                 </button>
                 <button
                   className='btn primary space-x-2'
@@ -126,18 +138,20 @@ const ImmigrationForm = () => {
                   <FaEnvelope />
                   <span>Email</span>
                 </button>
+                <button
+                  className='btn primary space-x-2'
+                  onClick={emailRecord(values.input_email_address, rid, true)}
+                >
+                  <GrSend fill='#FFF' />
+                  <span>Save & Send</span>
+                </button>
               </div>
             </div>
             <div dangerouslySetInnerHTML={{ __html: html }} />
-            <canvas id='record-id-barcode' jsbarcode-format='CODE128'></canvas>
           </Fragment>
         ),
-
-        didOpen: () => {
-          JsBarcode('#record-id-barcode', rid.toUpperCase())
-        }
       })
-    // }
+    }
   }
 
   return (
