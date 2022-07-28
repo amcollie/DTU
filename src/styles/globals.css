@@ -8,12 +8,18 @@
 @import 'form.css';
 
 .thank-you-popup {
-  .swal2-html-container :is(div, p, span) {
+  .swal2-html-container div ~ div {
+    @apply max-w-lg mx-auto;
+  }
+
+  .swal2-html-container :is(h1, div, p) {
     @apply text-gray-800;
   }
 
-  br + div > div > div {
-    background-color: theme('colors.gray.900') !important;
+  @media print {
+    .swal2-actions, .swal2-icon {
+      @apply hidden;
+    }
   }
 }
 
