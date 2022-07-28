@@ -1,407 +1,54 @@
-import { Fragment } from 'react'
+import { Fragment, useEffect } from 'react'
+import Sweetalert from 'sweetalert2'
+import JsBarcode from 'jsbarcode'
+import withReact from 'sweetalert2-react-content'
 
 import ValidatedForm from '@components/form'
-import ARRIVAL_PORTS from '@data/ports-of-arrival'
-import COUNTRIES from '@data/countries'
-import Swal from 'sweetalert2'
 
-const countries = COUNTRIES.map(c => c.name)
+import fields from '@/app.fields'
+import { FaEnvelope, FaPrint } from 'react-icons/fa'
 
-const notTravellingForWork = f => f.input_trip_purpose != 'Employment'
+const Swal = withReact(Sweetalert)
 
 const ImmigrationForm = () => {
-  const fields = [
-    '::Personal Details',
-    'i::Please make sure that your name matches what is in your passport',
-    [
-      'input_first_name:First Name',
-      'input_middle_name:Middle Name(s):optional',
-      'input_last_name:Surname',
-    ],
-    [
-      {
-        name: 'input_date_of_birth',
-        label: 'Date of Birth',
-        as: 'date',
-      },
-      {
-        name: 'input_gender',
-        label: 'Sex',
-        options: ['Male', 'Female']
-      },
-      {
-        name: 'input_country_of_birth',
-        label: 'Country of Birth',
-        options: countries,
-      },
-      {
-        name: 'input_nationality',
-        label: 'Nationality',
-        options: countries,
-      }
-    ],
+  useEffect(() => {
+    const help = document.getElementById('open-help')
 
-    '::Contact Details',
-    {
-      name: 'input_email_address',
-      label: 'Email Address',
-      as: 'email'
-    },
-    [
-      {
-        name: 'input_mobile',
-        label: 'Primary Contact Number',
-        as: 'tel',
-      },
-      {
-        name: 'input_home',
-        label: 'Alternate Contact Number',
-        as: 'tel',
-      },
-    ],
-
-    '::Passport Details',
-    [
-      'input_passport_id:Passport Number',
-      {
-        name: 'input_expiration_date',
-        label: 'Expiration Date',
-        as: 'date'
-      },
-    ],
-    {
-      name: 'input_passport_upload',
-      label: 'Passport Page',
-      required: false,
-      dropzoneText: 'Please upload the data page of your passport',
-      as: 'file:image',
-      hint: <strong>Accepts .jpg images only</strong>,
-      accept: {
-        'image/*': ['.jpg', 'jpeg'],
-      },
-      attributes: {
-        accept: 'image/jpeg'
-      }
-    },
-
-    '::Home Addres',
-    {
-      name: 'input_address',
-      label: 'Address Line 1',
-    },
-    {
-      name: 'input_address_cont',
-      label: 'Address Line #2 (Optional)',
-      required: false,
-    },
-    [
-      {
-        name: 'input_city_town',
-        label: 'City',
-      },
-      {
-        name: 'input_state_province',
-        label: 'State/Province',
-      },
-      {
-        name: 'input_country',
-        label: 'Country',
-        options: countries,
-      },
-      {
-        name: 'input_zip_postal_code',
-        label: 'Zip Code',
-        hint: 'If you do not have one, use 00000',
-      }
-    ],
-
-    '::Travel Information',
-    {
-      name: 'input_number_of_visits',
-      label: 'How many times have you visited The Bahamas in the last 6 months?',
-      type: 'number',
-      attributes: {
-        min: 0,
-      }
-    },
-    {
-      name: 'input_trip_purpose',
-      label: 'Reason For Visiting',
-      options: [
-        'Boating',
-        'Business',
-        'Casino',
-        'Conference',
-        'Diving',
-        'Fishing',
-        'Employment',
-        'Honeymoon',
-        'Private Flying',
-        'Vacation',
-        'Visiting Friends And Relatives',
-        'Wedding',
-        'Other',
-      ]
-    },
-    [
-      {
-        name: 'input_arrival_port',
-        label: 'Port of Arrival',
-        options: [
-          `NAS - Lynden Pindling Int'l Airport`,
-          `FPO - Freeport Int'l Airport`,
-        ],
-      },
-      {
-        name: 'input_mode_of_travel',
-        label: 'Mode of Travel',
-        options: ['Air', 'Sea'],
-        default: 'Air',
-      },
-      {
-        name: 'input_airline_name',
-        label: 'Airline',
-        options: [
-          'Bahamasair',
-          'Jet Blue',
-          'American Airlines',
-          'Silver Airways',
-          'British Airways',
-        ],
-        hide: f => f.mode_of_travel == 'Sea'
-      },
-      {
-        name: 'input_flight_number',
-        label: 'Flight Number',
-        hide: f => f.mode_of_travel == 'Sea'
-      },
-      {
-        name: 'input_vessel_name',
-        label: 'Vessel Name',
-        hide: f => f.mode_of_travel == 'Air'
-      },
-      {
-        name: 'input_vessel_number',
-        label: 'Vessel Number',
-        hide: f => f.mode_of_travel == 'Air'
-      },
-      's::',
-      {
-        name: 'input_country_of_embarcation',
-        label: 'Country of Embarkation',
-        options: countries,
-      },
-      {
-        name: 'input_port_of_embarcation',
-        label: 'Port of Embarkation',
-        options: [
-          'JFK - New York Airport',
-          'MIA - Miami Airport',
-          'FLL - Hollywood Airport',
-        ]
-      },
-      {
-        name: 'input_date_of_arrival',
-        label: 'Intended Date of Arrival',
-        as: 'date',
-      },
-      {
-        name: 'input_date_of_departure',
-        label: 'Intended Date of Departure',
-        as: 'date',
-      },
-    ],
-
-    '::Accomodations',
-    [
-      {
-        name: 'input_type_of_accomodation',
-        label: 'Type of Accomodation',
-        options: [
-          {
-            label: 'Resort/Hotel',
-            value: 'Hotel'
-          },
-          'Rented Apartment/Villa',
-          'Own Property',
-          'Time Share',
-          'Friends/Relatives',
-          'Private Boat',
-        ]
-      },
-    ],
-    [
-      {
-        name: 'input_hotel_name',
-        label: 'Hotel Name',
-        hide: values => values.input_type_of_accomodation != 'Hotel'
-      },
-      {
-        name: 'input_hotel_city',
-        label: 'Hotel City',
-        hide: values => values.input_type_of_accomodation != 'Hotel'
-      },
-    ],
-    [
-      {
-        name: 'input_local_island',
-        label: 'Island',
-        options: Object.keys(ARRIVAL_PORTS)
-          .reduce((o, k) => ({ ...o, [k]: k }), {}),
-      },
-      {
-        name: 'input_local_city',
-        label: 'City / Settlement',
-        options: values => ARRIVAL_PORTS[values.input_local_island]
-          ?? 'Please select an island island first',
-      }
-    ],
-    {
-      name: 'input_local_address',
-      label: 'Street Address',
-      hide: values => values.input_type_of_accomodation == 'Hotel'
-    },
-    {
-      heading: 'Sponsor Details',
-      hide: notTravellingForWork
-    },
-    [
-      {
-        name: 'input_sponsor_name',
-        label: 'First Name',
-        hide: notTravellingForWork
-      },
-      {
-        name: 'input_sponsor_last_name',
-        label: 'Last Name',
-        hide: notTravellingForWork
-      },
-      {
-        name: 'input_sponsor_phone_number',
-        label: 'Phone Number',
-        as: 'tel',
-        hide: notTravellingForWork
-      },
-    ],
-
-    '::Emergency Contact',
-    'i::This information will only be in case of an extenuating emergency, and is entirely optional',
-    {
-      name: 'has_emergency_contact',
-      as: 'switch',
-      label: 'I have an emergency contact',
-    },
-    [
-      {
-        name: 'input_emergency_contact_firstname',
-        hide: values => !values.has_emergency_contact,
-        label: 'First Name',
-        required: false,
-      },
-      {
-        name: 'input_emergency_contact_lastname',
-        hide: values => !values.has_emergency_contact,
-        label: 'Last Name',
-        required: false,
-      },
-      {
-        name: 'input_emergency_contact_relationship',
-        hide: values => !values.has_emergency_contact,
-        label: 'Relationship',
-        required: false,
-        options: [
-          'Spouse / Significant Other',
-          'Parent',
-          'Grandparent',
-          'Child',
-          'Friend',
-          'Other',
-        ]
-      },
-      {
-        name: 'input_emergency_contact_phone',
-        hide: values => !values.has_emergency_contact,
-        label: 'Contact Phone #',
-        required: false,
-        as: 'tel',
-      }
-    ],
-    '::Travel Members',
-    `
-      i::If you are travelling with family members that live in the same
-      household as you, you may enter up to 3 additional persons below.
-    `,
-    {
-      name: 'additional_members',
-      as: 'switch',
-      label: 'I am travelling with family members',
-    },
-    {
-      name: 'travel_members',
-      type: 'array',
-      label: 'Family Members',
-      countLabel: 'Member',
-      hide: values => !values.additional_members,
-      min: 1,
-      max: 3,
-      fields: [
-        [
-          'first_name',
-          'middle_name:Middle Name:optional',
-          'last_name',
-        ],
-        {
-          name: 'email',
-          label: 'Email Address',
-          as: 'email'
-        },
-        [
-          {
-            name: 'dob',
-            label: 'Date of Birth',
-            as: 'date',
-          },
-          {
-            name: 'sex',
-            label: 'Sex',
-            options: ['Male', 'Female']
-          },
-          {
-            name: 'country_of_birth',
-            label: 'Country of Birth',
-            options: countries,
-          },
-          {
-            name: 'nationality',
-            label: 'Nationality',
-            options: countries,
-          }
-        ],
-        [
-          'input_passport_id:Passport Number',
-          {
-            name: 'input_expiration_date',
-            label: 'Expiration Date',
-            as: 'date'
-          },
-        ],
-        {
-          name: 'input_passport_upload',
-          label: 'Passport Page',
-          required: false,
-          dropzoneText: 'Please upload the data page of your passport',
-          as: 'file:image'
-        },
-        // {
-        //   name: 'vaccinated',
-        //   label: 'Is this person fully vaccinated?',
-        //   as: 'select:boolean',
-        // },
-      ]
+    const openHelpPopup = async () => {
+      await Swal.fire({
+        icon: 'question',
+        title: 'Need Help?',
+        confirmButtonColor: '#17BDD1',
+      })
     }
-  ]
 
-  const submit = async (values) => {
+    help?.addEventListener('click', openHelpPopup)
+    return () => help?.removeEventListener('click', openHelpPopup)
+  })
+
+  const emailRecord = (email, id) => async () => {
+    const body = new FormData()
+    body.append('email', email)
+    body.append('record_id', id)
+
+    // const res = await fetch('/send_record_email.php', {
+    //   method: 'POST',
+    //   body
+    // })
+    
+    // if (!res.ok) {
+    //   Swal.showValidationMessage('Failed to send email')
+    //   return
+    // }
+    
+    await Swal.fire(
+      'Success',
+      'Email successfully sent. Please make sure to also check your spanm and junk folders',
+      'success'
+    )
+  }
+
+  const submit = async values => {
     const body = Object.entries({
       ...values,
       input_passenger_reg_amount: 1 + (values.travellers?.length ?? 0),
@@ -412,64 +59,93 @@ const ImmigrationForm = () => {
       return form
     }, new FormData())
 
-    const { length } = values.travel_members
-    for (let i = 0; i < length; i++) {
-      body.append(`input${i + 2}_passport_id`, values.travel_members[i].passport_id?.toUpperCase())
-      body.append(`input${i + 2}_number_of_visits`, values.travel_members[i].number_of_visits)
-      body.append(`input${i + 2}_mobile`, values.travel_members[i].mobile)
-      body.append(`input${i + 2}_email_address`, values.travel_members[i].email_address?.toUpperCase())
-      body.append(`input${i + 2}_first_name`, values.travel_members[i].first_name?.toUpperCase()) 
-      body.append(`input${i + 2}_middle_name`, values.travel_members[i].middle_name?.toUpperCase())
-      body.append(`input${i + 2}_last_name`, values.travel_members[i].last_name?.toUpperCase())
-      body.append(`input${i + 2}_gender`, values.travel_members[i].gender?.toUpperCase())
-      body.append(`input${i + 2}_country_of_birth`, values.travel_members[i].country_of_birth?.toUpperCase())
-      body.append(`input${i + 2}_nationality`, values.travel_members[i].nationality?.toUpperCase())
-      body.append(`input${i + 2}_date_of_birth`, values.travel_members[i].date_of_birth?.toUpperCase())
-      body.append(`input${i + 2}_document_type`, values.travel_members[i].document_type?.toUpperCase())
-      body.append(`input${i + 2}_immigration_status`, values.travel_members[i].immigration_status?.toUpperCase())
-      body.append(`input${i + 2}_expiration_date`, values.travel_members[i].expiration_date?.toUpperCase())
-      body.append(`input${i + 2}_passport_upload`, values.travel_members[i].passport_upload)
+    if (values.additional_members) {
+      const { length } = values.travel_members
+      for (let i = 0; i < length; i++) {
+        body.append(`input${i + 2}_passport_id`, values.travel_members[i].passport_id?.toUpperCase())
+        body.append(`input${i + 2}_number_of_visits`, values.travel_members[i].number_of_visits)
+        body.append(`input${i + 2}_mobile`, values.travel_members[i].mobile)
+        body.append(`input${i + 2}_email_address`, values.travel_members[i].email_address?.toUpperCase())
+        body.append(`input${i + 2}_first_name`, values.travel_members[i].first_name?.toUpperCase()) 
+        body.append(`input${i + 2}_middle_name`, values.travel_members[i].middle_name?.toUpperCase())
+        body.append(`input${i + 2}_last_name`, values.travel_members[i].last_name?.toUpperCase())
+        body.append(`input${i + 2}_gender`, values.travel_members[i].gender?.toUpperCase())
+        body.append(`input${i + 2}_country_of_birth`, values.travel_members[i].country_of_birth?.toUpperCase())
+        body.append(`input${i + 2}_nationality`, values.travel_members[i].nationality?.toUpperCase())
+        body.append(`input${i + 2}_date_of_birth`, values.travel_members[i].date_of_birth?.toUpperCase())
+        body.append(`input${i + 2}_document_type`, values.travel_members[i].document_type?.toUpperCase())
+        body.append(`input${i + 2}_immigration_status`, values.travel_members[i].immigration_status?.toUpperCase())
+        body.append(`input${i + 2}_expiration_date`, values.travel_members[i].expiration_date?.toUpperCase())
+        body.append(`input${i + 2}_passport_upload`, values.travel_members[i].passport_upload)
+      }
     }
 
     delete body.travel_members
+    console.log(...body.entries())
 
-    const res = await fetch('/add_record.php', {
-      body,
-      method: 'POST',
-    })
+    // const res = await fetch('/add_record.php', {
+    //   body,
+    //   method: 'POST',
+    // })
 
-    if (res.ok) {
-      const html = await res.text()
-      console.log(html)
+    // if (res.ok) {
+    //   const html = await res.text()
+    //   console.log(html)
+      const html = SuccessText()
+      const [, rid] = html.match(/<h1>(.+)<\/h1>/)
 
       await Swal.fire({
+        icon: 'success',
+        width: 800,
         title: 'Thank You',
         confirmButtonText: 'Close',
-        customClass: 'thank-you-popup',
-        html: `
-          <div class='flex flex-col items-center mb-4 print:hidden'>
-            <p class='mb-4'>
-              Your information has been successfully submitted.
-              <br />
-              Please see below your Application ID, which you will have to present
-              to an Immigration Officer upon arrival in The Bahamas.
-            </p>
-            <button class='btn btn-primary' onclick='window.print()'>
-              Print For Your Records
-            </button>
-          </div>
-          ${html}
-        `,
+        confirmButtonColor: '#17BDD1',
+        customClass: {
+          popup: 'thank-you-popup',
+          confirmButton: 'print:hidden',
+          icon: 'print:hidden',
+        },
+        html: (
+          <Fragment>
+            <div className='flex flex-col items-center mb-4 print:hidden'>
+              <p className='mb-4'>
+                Your information has been successfully submitted.
+                <br />
+                Please see below your Application ID, which you will have to present
+                to an Immigration Officer upon arrival in The Bahamas.
+              </p>
+              <div className='flex justify-center space-x-6'>
+                <button className='btn primary space-x-2' onClick={window.print}>
+                  <FaPrint />
+                  <span>Print</span>
+                </button>
+                <button
+                  className='btn primary space-x-2'
+                  onClick={emailRecord(values.input_email_address, rid)}
+                >
+                  <FaEnvelope />
+                  <span>Email</span>
+                </button>
+              </div>
+            </div>
+            <div dangerouslySetInnerHTML={{ __html: html }} />
+            <canvas id='record-id-barcode' jsbarcode-format='CODE128'></canvas>
+          </Fragment>
+        ),
+
+        didOpen: () => {
+          JsBarcode('#record-id-barcode', rid.toUpperCase())
+        }
       })
-    }
+    // }
   }
 
   return (
     <ValidatedForm
       fields={fields}
       onSubmit={submit}
-      defaults={defaults}
       handleFormData={false}
+      handleConfirmation={false}
     >
       <footer>
         <button name='submit' type='submit'>Submit</button>
